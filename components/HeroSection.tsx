@@ -6,14 +6,6 @@ export default function HeroSection() {
   return (
     <section className="relative w-full h-[600px] flex items-center justify-center text-center text-white overflow-hidden">
       {/* Background Image - replace with your static image or placeholder */}
-      <Image
-        src="/images/logo.jpg" // Place your hero background image in public/images/hero-bg.jpg
-        alt="Creative printing background"
-        layout="fill"
-        objectFit="cover"
-        quality={100}
-        className="z-0"
-      />
       <div className="absolute inset-0 bg-black opacity-50 z-10"></div> {/* Overlay for text readability */}
 
       <div className="relative z-20 p-4 max-w-3xl">

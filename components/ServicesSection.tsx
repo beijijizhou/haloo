@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const services = [
   {
-    icon: 'https://www.clipartmax.com/png/middle/314-3149887_t-png-icon-free-t-shirt.png', // clear line-T‑shirt
+    icon: 'https://www.clipartmax.com/png/middle/314-3149887_t-png-icon-free-t-shirt.png', 
     title: 'Custom Design',
     description: 'Bring your vision to life with our expert design team.',
   },
