@@ -7,7 +7,7 @@ export default function HeroSection() {
     <section className="relative w-full h-[600px] flex items-center justify-center text-center text-white overflow-hidden">
       {/* Background Image - replace with your static image or placeholder */}
       <Image
-        src="/images/hero-bg.jpg" // Place your hero background image in public/images/hero-bg.jpg
+        src="/images/logo.jpg" // Place your hero background image in public/images/hero-bg.jpg
         alt="Creative printing background"
         layout="fill"
         objectFit="cover"
