@@ -23,8 +23,7 @@ export default function ContactPage() {
 
         <div>
           <strong>Address:</strong><br />
-          55 Kennedy Dr,<br />
-          Suite D,<br />
+          55 Kennedy Dr, Suite D,<br />
           Hauppauge, NY 11788
         </div>
       </div>

@@ -3,26 +3,28 @@ import Image from 'next/image';
 
 const services = [
   {
-    icon: 'https://www.clipartmax.com/png/middle/314-3149887_t-png-icon-free-t-shirt.png', 
+    icon: 'https://www.clipartmax.com/png/middle/314-3149887_t-png-icon-free-t-shirt.png',
     title: 'Custom Design',
     description: 'Bring your vision to life with our expert design team.',
   },
   {
-    icon: 'https://www.clipartmax.com/png/middle/314-3149887_t-png-icon-free-t-shirt.png', // clear line-T‑shirt
+    icon: 'https://www.clipartmax.com/png/middle/314-3149887_t-png-icon-free-t-shirt.png',
+    title: 'Single-Piece Delivery',
+    description: 'Order as little as one piece — no minimum required.',
+  },
+  {
+    icon: 'https://www.clipartmax.com/png/middle/314-3149887_t-png-icon-free-t-shirt.png',
     title: 'High-Quality Prints',
     description: 'Crisp, vibrant prints that make a lasting impression.',
   },
   {
-    icon: 'https://www.clipartmax.com/png/middle/314-3149887_t-png-icon-free-t-shirt.png', // clear line-T‑shirt
-    title: 'Fast Turnaround',
-    description: 'Get your prints quickly without compromising quality.',
+    icon: 'https://www.clipartmax.com/png/middle/314-3149887_t-png-icon-free-t-shirt.png',
+    title: 'Massive Daily Capacity',
+    description: 'Print up to 30,000 pieces daily to meet your demand.',
   },
-  {
-    icon: 'https://www.clipartmax.com/png/middle/314-3149887_t-png-icon-free-t-shirt.png', // clear line-T‑shirt
-    title: 'Eco-Friendly Options',
-    description: 'Sustainable printing solutions for a greener future.',
-  },
+
 ];
+
 
 
 
