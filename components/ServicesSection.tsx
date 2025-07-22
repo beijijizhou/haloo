@@ -3,12 +3,12 @@ import Image from 'next/image';
 
 const services = [
   {
-    icon: 'https://www.clipartmax.com/png/middle/314-3149887_t-png-icon-free-t-shirt.png',
+    icon: 'https://cdn-icons-png.flaticon.com/512/12868/12868385.png',
     title: 'Custom Design',
     description: 'Bring your vision to life with our expert design team.',
   },
   {
-    icon: 'https://www.clipartmax.com/png/middle/314-3149887_t-png-icon-free-t-shirt.png',
+    icon: 'https://cdn-icons-png.flaticon.com/128/679/679720.png',
     title: 'Single-Piece Delivery',
     description: 'Order as little as one piece — no minimum required.',
   },
