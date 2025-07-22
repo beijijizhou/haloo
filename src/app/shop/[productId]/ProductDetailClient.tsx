@@ -27,8 +27,8 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   // You might also want state for selected size, if that's dynamic
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const router = useRouter(); // Initialize useRouter
-
- 
+   // Log the secret key for debugging
+  
   const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(event.target.value, 10);
     if (!isNaN(value) && value >= 1) {
