@@ -17,8 +17,8 @@ export const mockProducts = [
     description: 'Stay warm and stylish with our plush Cosmic Cat hoodie. Features a whimsical feline enjoying the vastness of space.',
     longDescription: 'Cuddle up with the cosmos in this super-soft Cosmic Cat Hoodie. Made with a cozy blend of cotton and polyester, it features a unique print of a cat exploring a nebula. The hoodie has a comfortable fit, a spacious front pocket, and a warm hood perfect for chilly evenings. A must-have for cat lovers and stargazers alike!',
     images: [
-      '/images/cosmic-cat-hoodie.jpg',
-      '/images/cosmic-cat-hoodie-detail.jpg',
+      // '/images/cosmic-cat-hoodie.jpg',
+      // '/images/cosmic-cat-hoodie-detail.jpg',
     ],
     alt: 'Black hoodie with cosmic cat print',
   },

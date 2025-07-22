@@ -4,6 +4,8 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { PRODUCT_SIZES } from '../../../../lib/constants';
+import { useRouter } from 'next/navigation'; // Import useRouter
+
 // Assuming this is defined in lib/constants
 
 // Define the type for product data passed as props
@@ -24,8 +26,9 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   const [quantity, setQuantity] = useState(1);
   // You might also want state for selected size, if that's dynamic
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const router = useRouter(); // Initialize useRouter
 
-  // Event handler for quantity input field
+ 
   const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(event.target.value, 10);
     if (!isNaN(value) && value >= 1) {
@@ -34,15 +37,12 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
       setQuantity(0);
     }
   };
-
-  // Event handler for increment button
-  const handleIncrement = () => {
-    setQuantity(prevQuantity => prevQuantity + 1);
-  };
-
-  // Event handler for decrement button
-  const handleDecrement = () => {
-    setQuantity(prevQuantity => (prevQuantity > 1 ? prevQuantity - 1 : 1));
+  const handleCheckout = () => {
+    // In a real application, you'd likely:
+    // 1. Add the product to a global cart state or a session/local storage
+    // 2. Pass relevant product/quantity/size info to the checkout page if needed
+    // For now, we'll just redirect.
+    router.push('/checkout'); // Redirects to the /checkout page
   };
 
   return (
@@ -113,8 +113,12 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
           </div>
 
           {/* Add to Cart Button */}
-          <button className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-6 rounded-full text-lg transition-colors duration-300 shadow-lg">
-            Add to Cart (Static)
+          <button
+            onClick={handleCheckout} // Add onClick handler
+
+            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-6 rounded-full text-lg transition-colors duration-300 shadow-lg">
+            {/* Add to Cart (Static) */}
+            Check out
           </button>
         </div>
       </div>
