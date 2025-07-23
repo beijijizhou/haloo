@@ -1,12 +1,14 @@
-'use client'; // Mark as Client Component for usePathname
+'use client';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
+import ShopDropdownMenu from './ShopDropdownMenu';
 
 export default function Header() {
-  const pathname = usePathname(); // Get current pathname
+  const pathname = usePathname();
+  const [isShopHovered, setIsShopHovered] = useState(false);
 
-  // Define navigation links
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/shop', label: 'Shop' },
@@ -17,7 +19,6 @@ export default function Header() {
   return (
     <header className="bg-white text-gray-800 p-4 shadow">
       <nav className="container mx-auto flex justify-between items-center">
-        {/* Logo + Brand Name */}
         <Link href="/" className="flex items-center space-x-1">
           <Image
             src="/images/logo.jpg"
@@ -26,27 +27,34 @@ export default function Header() {
             height={120}
             className="rounded-full"
           />
-          <span className="text-4xl font-extrabold tracking-wide text-orange-500">Haloo</span>
+          <span className="text-4xl font-extrabold tracking-wide text-orange-500 font-h5">
+            Haloo
+          </span>
         </Link>
 
-        {/* Navigation Links */}
         <div className="text-base space-x-6">
           {navLinks.map((link) => {
-            // Check if the current pathname matches the link's href
             const isActive = pathname === link.href || (link.href === '/shop' && pathname.startsWith('/shop/'));
+            const isShopLink = link.href === '/shop';
 
             return (
-              <Link
+              <div
                 key={link.href}
-                href={link.href}
-                className={`relative inline-block transition-colors duration-300 ${
-                  isActive ? 'text-orange-500' : 'text-gray-800 hover:text-orange-500'
-                } group`} // Added group for hover effect
+                className="relative inline-block group"
+                onMouseEnter={() => isShopLink && setIsShopHovered(true)}
+                onMouseLeave={() => isShopLink && setIsShopHovered(false)}
               >
-                {link.label}
-                {/* Underline animation */}
-                <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-gray-400 group-hover:w-full group-hover:bg-orange-500 transition-all duration-300 ease-in-out" />
-              </Link>
+                <Link
+                  href={link.href}
+                  aria-current={isActive ? 'page' : undefined}
+                  className={`relative inline-block transition-colors duration-300 font-h5 ${isActive ? 'text-orange-500' : 'text-gray-800 hover:text-orange-500'
+                    }`}
+                >
+                  {link.label}
+                  <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-gray-400 group-hover:w-full group-hover:bg-orange-500 transition-all duration-300 ease-in-out" />
+                </Link>
+                {isShopLink && <ShopDropdownMenu isOpen={isShopHovered} />}
+              </div>
             );
           })}
         </div>
