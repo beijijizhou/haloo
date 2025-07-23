@@ -26,7 +26,7 @@ export default function Header() {
             height={120}
             className="rounded-full"
           />
-          <span className="text-4xl font-extrabold tracking-wide">Haloo</span>
+          <span className="text-4xl font-extrabold tracking-wide text-orange-500">Haloo</span>
         </Link>
 
         {/* Navigation Links */}
