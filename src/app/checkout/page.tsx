@@ -95,7 +95,7 @@ export default function CheckoutPage() {
         } else {
           setErrorFetchingIntent(data.error || 'Failed to fetch payment intent.');
         }
-      } catch (error) {
+      } catch  {
         setErrorFetchingIntent('Network error fetching payment intent.');
       } finally {
         setLoadingPaymentIntent(false);

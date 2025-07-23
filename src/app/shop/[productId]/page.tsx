@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation';
 import ProductDetailClient from './ProductDetailClient'; // Import your new Client Component
 import { mockProducts } from '../../../../lib/constants';
 
-
 // This function tells Next.js which static paths to generate at build time
 export async function generateStaticParams() {
   // Use mockProducts from constants or define it here if you didn't move it
@@ -13,8 +12,8 @@ export async function generateStaticParams() {
   }));
 }
 
-export default function ProductDetailPage({ params }: { params: { productId: string } }) {
-  const productId = params.productId;
+export default async function ProductDetailPage({ params }: { params: Promise<{ productId: string }> }) {
+  const { productId } = await params;
   const product = mockProducts.find(p => p.id === productId);
 
   if (!product) {

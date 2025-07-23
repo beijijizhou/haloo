@@ -9,17 +9,16 @@ const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRETE_KEY || '', {
 
 // Define an interface for the expected URL search parameters
 interface OrderSuccessPageProps {
-  searchParams: {
+  searchParams: Promise<{
     payment_intent?: string;
     payment_intent_client_secret?: string;
     redirect_status?: string;
-  };
+  }>;
 }
 
 // Main component for the order success page
 export default async function OrderSuccessPage({ searchParams }: OrderSuccessPageProps) {
-  const { payment_intent, redirect_status } = searchParams;
-
+  const { payment_intent, redirect_status } = await searchParams;
   // 1. Basic validation of required parameters
   if (!payment_intent || !redirect_status) {
     // If essential parameters are missing, redirect to home or an error page
@@ -68,8 +67,8 @@ export default async function OrderSuccessPage({ searchParams }: OrderSuccessPag
       isSuccess = false; // Override if Stripe's definitive status isn't 'succeeded'
     }
 
-  } catch (error) {
-    console.error('Error retrieving PaymentIntent from Stripe:', error);
+  } catch {
+    console.error('Error retrieving PaymentIntent from Stripe:');
     verificationError = 'Could not verify payment details. Please contact support.';
     isSuccess = false; // Mark as not successful if verification fails
   }
