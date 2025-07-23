@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import HeroSection from '../../components/HeroSection';
 import ProductRangeSection from '../../components/ProductRangeSection';
 import ServicesSection from '../../components/ServicesSection';
+import ProductDisplaySection from '../../components/ProductDisplaySection';
 
 // Animation wrapper component
 function ScrollAnimatedSection({ children }: { children: React.ReactNode }) {
@@ -34,8 +35,10 @@ export default function Home() {
       <div className="flex flex-col min-h-screen">
         <main className="flex-grow container mx-auto p-4">
           <ScrollAnimatedSection>
+            <ProductDisplaySection />
             <HeroSection />
           </ScrollAnimatedSection>
+
           <ScrollAnimatedSection>
             <ServicesSection />
           </ScrollAnimatedSection>
