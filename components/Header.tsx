@@ -18,21 +18,25 @@ export default function Header() {
 
   return (
     <header className="bg-white text-gray-800 p-4 shadow">
-      <nav className="container mx-auto flex justify-between items-center">
-        <Link href="/" className="flex items-center space-x-1">
-          <Image
-            src="/images/logo.jpg"
-            alt="Haloo Logo"
-            width={120}
-            height={120}
-            className="rounded-full"
-          />
-          <span className="text-4xl font-extrabold tracking-wide text-orange-500 font-h5">
-            Haloo
-          </span>
-        </Link>
+      <nav className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+        {/* First Column: Logo + Haloo */}
+        <div className="flex items-center space-x-1">
+          <Link href="/" className="flex items-center space-x-1">
+            <Image
+              src="/images/logo.jpg"
+              alt="Haloo Logo"
+              width={120}
+              height={120}
+              className="rounded-full"
+            />
+            <span className="text-4xl font-extrabold tracking-wide text-orange-500 font-h5">
+              Haloo
+            </span>
+          </Link>
+        </div>
 
-        <div className="text-base space-x-6">
+        {/* Second Column: Navigation Links */}
+        <div className="flex justify-center space-x-6 text-base">
           {navLinks.map((link) => {
             const isActive = pathname === link.href || (link.href === '/shop' && pathname.startsWith('/shop/'));
             const isShopLink = link.href === '/shop';
@@ -47,8 +51,9 @@ export default function Header() {
                 <Link
                   href={link.href}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`relative inline-block transition-colors duration-300 font-h5 ${isActive ? 'text-orange-500' : 'text-gray-800 hover:text-orange-500'
-                    }`}
+                  className={`relative inline-block transition-colors duration-300 font-h5 ${
+                    isActive ? 'text-orange-500' : 'text-gray-800 hover:text-orange-500'
+                  }`}
                 >
                   {link.label}
                   <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-gray-400 group-hover:w-full group-hover:bg-orange-500 transition-all duration-300 ease-in-out" />
@@ -58,6 +63,9 @@ export default function Header() {
             );
           })}
         </div>
+
+        {/* Third Column: Empty (Placeholder) */}
+        <div className="hidden md:block"></div>
       </nav>
     </header>
   );
