@@ -5,8 +5,73 @@ import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
-// Product data (unchanged)
-const products = [
+// Define a type for the models object
+interface Models {
+  [key: string]: string[];
+}
+
+// Define a type for products
+interface Product {
+  id: string;
+  name: string;
+  price: string;
+  image: string;
+  alt: string;
+  category: string;
+  model: string;
+}
+
+// iPhone case products
+const iphoneCaseProducts: Product[] = [
+  {
+    id: 'iphone-case',
+    name: 'iPhone Case',
+    price: '24.99',
+    image: '/images/display/iphone-case.jpg',
+    alt: 'Custom iPhone case',
+    category: 'phonecase',
+    model: 'iphone',
+  },
+  {
+    id: 'devil-iphone-case',
+    name: 'Devil iPhone Case',
+    price: '25.99',
+    image: '/images/phone case/devil.jpg',
+    alt: 'Devil-themed custom iPhone case',
+    category: 'phonecase',
+    model: 'iphone',
+  },
+  {
+    id: 'sky-iphone-case',
+    name: 'Sky iPhone Case',
+    price: '23.99',
+    image: '/images/phone case/sky.jpg',
+    alt: 'Sky-themed custom iPhone case',
+    category: 'phonecase',
+    model: 'iphone',
+  },
+  {
+    id: 'tiger-iphone-case',
+    name: 'Tiger iPhone Case',
+    price: '26.99',
+    image: '/images/phone case/tiger.jpg',
+    alt: 'Tiger-themed custom iPhone case',
+    category: 'phonecase',
+    model: 'iphone',
+  },
+  {
+    id: 'wtw-iphone-case',
+    name: 'WTW iPhone Case',
+    price: '24.99',
+    image: '/images/phone case/wtw.jpg',
+    alt: 'WTW-themed custom iPhone case',
+    category: 'phonecase',
+    model: 'iphone',
+  },
+];
+
+// Other products (cloth and Samsung case)
+const otherProducts: Product[] = [
   {
     id: 'pen',
     name: 'Pen T-shirt',
@@ -44,15 +109,6 @@ const products = [
     model: 'sweatshirt',
   },
   {
-    id: 'iphone-case',
-    name: 'iPhone Case',
-    price: '24.99',
-    image: '/images/display/iphone-case.jpg',
-    alt: 'Custom iPhone case',
-    category: 'phonecase',
-    model: 'iphone',
-  },
-  {
     id: 'samsung-case',
     name: 'Samsung Case',
     price: '22.99',
@@ -63,10 +119,8 @@ const products = [
   },
 ];
 
-// Define a type for the models object
-interface Models {
-  [key: string]: string[];
-}
+// Combine products
+const products: Product[] = [...iphoneCaseProducts, ...otherProducts];
 
 export default function ShopPage() {
   const searchParams = useSearchParams();
