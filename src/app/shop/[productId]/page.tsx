@@ -15,7 +15,8 @@ export async function generateStaticParams() {
 export default async function ProductDetailPage({ params }: { params: Promise<{ productId: string }> }) {
   const { productId } = await params;
   const product = mockProducts.find(p => p.id === productId);
-
+  // console.log('Product ID:', productId);
+  // console.log('Product Data:', product);
   if (!product) {
     notFound();
   }
