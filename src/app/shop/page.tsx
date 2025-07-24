@@ -24,16 +24,7 @@ interface Product {
 // iPhone case products
 const iphoneCaseProducts: Product[] = [
   {
-    id: 'iphone-case',
-    name: 'iPhone Case',
-    price: '24.99',
-    image: '/images/display/iphone-case.jpg',
-    alt: 'Custom iPhone case',
-    category: 'phonecase',
-    model: 'iphone',
-  },
-  {
-    id: 'devil-iphone-case',
+    id: 'devil',
     name: 'Devil iPhone Case',
     price: '25.99',
     image: '/images/phone case/devil.jpg',
@@ -42,7 +33,7 @@ const iphoneCaseProducts: Product[] = [
     model: 'iphone',
   },
   {
-    id: 'sky-iphone-case',
+    id: 'sky',
     name: 'Sky iPhone Case',
     price: '23.99',
     image: '/images/phone case/sky.jpg',
@@ -51,7 +42,7 @@ const iphoneCaseProducts: Product[] = [
     model: 'iphone',
   },
   {
-    id: 'tiger-iphone-case',
+    id: 'tiger',
     name: 'Tiger iPhone Case',
     price: '26.99',
     image: '/images/phone case/tiger.jpg',
@@ -60,7 +51,7 @@ const iphoneCaseProducts: Product[] = [
     model: 'iphone',
   },
   {
-    id: 'wtw-iphone-case',
+    id: 'wtw',
     name: 'WTW iPhone Case',
     price: '24.99',
     image: '/images/phone case/wtw.jpg',
@@ -91,7 +82,7 @@ const otherProducts: Product[] = [
     model: 'tshirt',
   },
   {
-    id: 'brother-hoodie',
+    id: 'brother',
     name: 'Brother Hoodie',
     price: '34.99',
     image: '/images/display/brother.jpg',
@@ -100,7 +91,7 @@ const otherProducts: Product[] = [
     model: 'hoodie',
   },
   {
-    id: 'daughter-sweatshirt',
+    id: 'daughter',
     name: 'Daughter Sweatshirt',
     price: '19.99',
     image: '/images/display/daughter.jpg',

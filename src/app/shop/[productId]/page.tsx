@@ -2,7 +2,8 @@
 // NO 'use client' HERE - This is a Server Component
 import { notFound } from 'next/navigation';
 import ProductDetailClient from './ProductDetailClient'; // Import your new Client Component
-import { mockProducts } from '../../../../lib/constants';
+import { mockProducts } from '../../../../lib/constants/product';
+// import { mockProducts } from '../../../../lib/constants';
 
 // This function tells Next.js which static paths to generate at build time
 export async function generateStaticParams() {
@@ -14,7 +15,10 @@ export async function generateStaticParams() {
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ productId: string }> }) {
   const { productId } = await params;
+  // console.log('Generating static params for products:', mockProducts);
+  // console.log('Product ID from params:', productId);
   const product = mockProducts.find(p => p.id === productId);
+  console.log('Fetched Product:', product);
   // console.log('Product ID:', productId);
   // console.log('Product Data:', product);
   if (!product) {
