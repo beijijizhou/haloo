@@ -3,117 +3,16 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { mockProducts } from '../../../lib/constants/product';
 
 // Define a type for the models object
 interface Models {
   [key: string]: string[];
 }
 
-// Define a type for products
-interface Product {
-  id: string;
-  name: string;
-  price: string;
-  image: string;
-  alt: string;
-  category: string;
-  model: string;
-}
-
-// iPhone case products
-const iphoneCaseProducts: Product[] = [
-  {
-    id: 'devil',
-    name: 'Devil iPhone Case',
-    price: '25.99',
-    image: '/images/phone case/devil.jpg',
-    alt: 'Devil-themed custom iPhone case',
-    category: 'phonecase',
-    model: 'iphone',
-  },
-  {
-    id: 'sky',
-    name: 'Sky iPhone Case',
-    price: '23.99',
-    image: '/images/phone case/sky.jpg',
-    alt: 'Sky-themed custom iPhone case',
-    category: 'phonecase',
-    model: 'iphone',
-  },
-  {
-    id: 'tiger',
-    name: 'Tiger iPhone Case',
-    price: '26.99',
-    image: '/images/phone case/tiger.jpg',
-    alt: 'Tiger-themed custom iPhone case',
-    category: 'phonecase',
-    model: 'iphone',
-  },
-  {
-    id: 'wtw',
-    name: 'WTW iPhone Case',
-    price: '24.99',
-    image: '/images/phone case/wtw.jpg',
-    alt: 'WTW-themed custom iPhone case',
-    category: 'phonecase',
-    model: 'iphone',
-  },
-];
-
-// Other products (cloth and Samsung case)
-const otherProducts: Product[] = [
-  {
-    id: 'pen',
-    name: 'Pen T-shirt',
-    price: '9.99',
-    image: '/images/display/pen.jpg',
-    alt: 'Cutie pen and strawberry T-shirt',
-    category: 'cloth',
-    model: 'tshirt',
-  },
-  {
-    id: 'first-day-tee',
-    name: 'First Day Tee',
-    price: '29.99',
-    image: '/images/display/first-day.jpg',
-    alt: 'Custom T-shirt for first day events',
-    category: 'cloth',
-    model: 'tshirt',
-  },
-  {
-    id: 'brother',
-    name: 'Brother Hoodie',
-    price: '34.99',
-    image: '/images/display/brother.jpg',
-    alt: 'Brother-themed custom hoodie',
-    category: 'cloth',
-    model: 'hoodie',
-  },
-  {
-    id: 'daughter',
-    name: 'Daughter Sweatshirt',
-    price: '19.99',
-    image: '/images/display/daughter.jpg',
-    alt: 'Personalized sweatshirt for daughters',
-    category: 'cloth',
-    model: 'sweatshirt',
-  },
-  {
-    id: 'samsung-case',
-    name: 'Samsung Case',
-    price: '22.99',
-    image: '/images/display/samsung-case.jpg',
-    alt: 'Custom Samsung case',
-    category: 'phonecase',
-    model: 'samsung',
-  },
-];
-
-// Combine products
-const products: Product[] = [...iphoneCaseProducts, ...otherProducts];
-
-export default function ShopPage() {
+// Client Component that uses useSearchParams
+function ShopContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -129,7 +28,7 @@ export default function ShopPage() {
   };
 
   // Filter products based on category and model
-  const filteredProducts = products.filter((product) => {
+  const filteredProducts = mockProducts.filter((product) => {
     if (selectedCategory === 'all') return true;
     if (product.category !== selectedCategory) return false;
     if (selectedModel && product.model !== selectedModel) return false;
@@ -210,7 +109,7 @@ export default function ShopPage() {
             >
               <div className="relative w-full h-72 bg-gray-100 flex items-center justify-center overflow-hidden">
                 <Image
-                  src={product.image}
+                  src={product.images[0]}
                   alt={product.alt}
                   fill
                   style={{ objectFit: 'cover' }}
@@ -230,5 +129,14 @@ export default function ShopPage() {
         )}
       </div>
     </div>
+  );
+}
+
+// Main ShopPage component with Suspense boundary
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<div className="text-center py-8">Loading...</div>}>
+      <ShopContent />
+    </Suspense>
   );
 }

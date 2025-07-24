@@ -121,18 +121,18 @@ const otherProducts: Product[] = [
     category: 'cloth',
     model: 'sweatshirt',
   },
-  {
-    id: 'samsung-case',
-    name: 'Samsung Case',
-    price: '22.99',
-    images: ['/images/display/samsung-case.jpg'],
-    alt: 'Custom Samsung case',
-    description: 'Sleek and durable custom Samsung case for everyday protection.',
-    longDescription:
-      'Protect your Samsung device with style using this custom Samsung case. Designed for durability and a snug fit, this case offers reliable protection against drops and scratches while featuring a sleek, modern design. Perfect for daily use or as a practical gift, it combines functionality with a polished look.',
-    category: 'phonecase',
-    model: 'samsung',
-  },
+  // {
+  //   id: 'samsung-case',
+  //   name: 'Samsung Case',
+  //   price: '22.99',
+  //   images: ['/images/display/samsung-case.jpg'],
+  //   alt: 'Custom Samsung case',
+  //   description: 'Sleek and durable custom Samsung case for everyday protection.',
+  //   longDescription:
+  //     'Protect your Samsung device with style using this custom Samsung case. Designed for durability and a snug fit, this case offers reliable protection against drops and scratches while featuring a sleek, modern design. Perfect for daily use or as a practical gift, it combines functionality with a polished look.',
+  //   category: 'phonecase',
+  //   model: 'samsung',
+  // },
 ];
 
 // Combine products

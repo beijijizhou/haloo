@@ -12,7 +12,7 @@ const productExamples = [
     },
     {
         name: 'First Day Tee',
-        image: '/images/display/first day.jpg', // Note: spaces in filenames can be problematic, use hyphens or underscores
+        image: '/images/display/first-day.jpg', // Note: spaces in filenames can be problematic, use hyphens or underscores
         alt: 'Custom T-shirt for first day events',
     },
     {
