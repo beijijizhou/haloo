@@ -12,19 +12,19 @@ export default function ShopDropdownMenu({ isOpen }: DropdownMenuProps) {
 
   const categories = [
     {
-      name: 'Clothes',
+      name: 'Clothing',
       items: [
-        { name: 'T-shirt', href: '/shop?category=cloth&model=tshirt' },
-        { name: 'Hoodie', href: '/shop?category=cloth&model=hoodie' },
-        { name: 'Sweatshirt', href: '/shop?category=cloth&model=sweatshirt' },
+        { name: 'T-shirt', href: '/shop?category=clothing&model=tshirt' },
+        { name: 'Hoodie', href: '/shop?category=clothing&model=hoodie' },
+        { name: 'Sweatshirt', href: '/shop?category=clothing&model=sweatshirt' },
       ],
     },
     {
       name: 'Phone Cases',
       items: [
-        { name: 'iPhone', href: '/shop?category=phonecase&model=iphone' },
+        { name: 'Apple', href: '/shop?category=phonecase&model=iphone' },
         { name: 'Samsung', href: '/shop?category=phonecase&model=samsung' },
-        { name: 'Universal', href: '/shop?category=phonecase&model=others' },
+        { name: 'Others', href: '/shop?category=phonecase&model=others' },
       ],
     },
   ];

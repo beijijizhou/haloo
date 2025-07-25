@@ -16,7 +16,7 @@ export const allDisplay = [
         alt: 'Lotus-themed custom apparel',
     },
     {
-        name: 'First Day Tee',
+        name: 'First Day',
         image: '/images/display/first-day.jpg',
         alt: 'Custom T-shirt for first day events',
     },
@@ -26,9 +26,9 @@ export const allDisplay = [
         alt: 'Brother-themed custom clothing',
     },
     {
-        name: 'Daughter Mug',
+        name: 'Daughter',
         image: '/images/display/daughter.jpg',
-        alt: 'Personalized mug for daughters',
+        alt: 'Personalizedfor daughters',
     },
     {
         name: 'Different',

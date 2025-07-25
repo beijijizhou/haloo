@@ -63,7 +63,7 @@ const iphoneCaseProducts: Product[] = [
   },
 ];
 
-// Other products (cloth and Samsung case)
+// Other products (clothing and Samsung case)
 const tshirtProducts: Product[] = [
   {
     id: 'pen',
@@ -75,20 +75,20 @@ const tshirtProducts: Product[] = [
       'Adorable pen with a playful strawberry design, perfect for daily writing.',
     longDescription:
       'Add a dash of charm to your stationery collection with this delightful pen. Designed with a whimsical strawberry accent and smooth ink flow, it makes writing more enjoyable. Ideal for students, creatives, or as a thoughtful gift, this pen combines functionality with personality, turning everyday tasks into moments of joy.',
-    category: 'cloth',
+    category: 'clothing',
     model: 'tshirt',
   },
   {
-    id: 'first-day-tee',
-    name: 'First Day Tee',
+    id: 'first-day',
+    name: 'First Day',
     price: '29.99',
     images: ['/images/display/first-day.jpg'],
     alt: 'Custom T-shirt for first day events',
     description:
-      'Celebrate new beginnings with a stylish, custom First Day Tee.',
+      'Celebrate new beginnings with a stylish, custom First Day.',
     longDescription:
-      'Mark memorable milestones with the First Day Tee — crafted for moments like the first day of school, work, or a fresh start in life. Made from high-quality, breathable cotton and available in various sizes, this T-shirt offers both comfort and durability. Its minimalist yet expressive design makes it perfect for photos, gifts, or daily wear to capture those once-in-a-lifetime experiences.',
-    category: 'cloth',
+      'Mark memorable milestones with the First Day — crafted for moments like the first day of school, work, or a fresh start in life. Made from high-quality, breathable cotton and available in various sizes, this T-shirt offers both comfort and durability. Its minimalist yet expressive design makes it perfect for photos, gifts, or daily wear to capture those once-in-a-lifetime experiences.',
+    category: 'clothing',
     model: 'tshirt',
   },
   {
@@ -101,20 +101,20 @@ const tshirtProducts: Product[] = [
       'A heartfelt T-shirt dedicated to the bond between brothers.',
     longDescription:
       'Express your love and appreciation with this Brother-themed T-shirt, crafted to symbolize the unique connection between siblings. Made with premium cotton and featuring a bold, modern print, it’s a great gift for birthdays, holidays, or just because. This shirt is not just apparel — it’s a reminder of loyalty, shared memories, and the lifelong bond of brotherhood.',
-    category: 'cloth',
+    category: 'clothing',
     model: 'hoodie',
   },
   {
     id: 'daughter',
-    name: 'Daughter Mug',
+    name: 'Daughter ',
     price: '19.99',
     images: ['/images/display/daughter.jpg'],
-    alt: 'Personalized mug for daughters',
+    alt: 'Personalized  for daughters',
     description:
-      'Personalized mug that celebrates daughters with love and elegance.',
+      'Personalized  that celebrates daughters with love and elegance.',
     longDescription:
-      'Start her morning with a warm reminder of your love. The Daughter Mug features a heartwarming design, perfect for expressing appreciation and pride. Crafted from durable ceramic and dishwasher-safe, this mug is ideal for daily use at home or work. Whether for a birthday, graduation, or spontaneous gesture, it’s a thoughtful gift she’ll cherish with every sip.',
-    category: 'cloth',
+      'Start her morning with a warm reminder of your love. The Daughter  features a heartwarming design, perfect for expressing appreciation and pride. Crafted from durable ceramic and dishwasher-safe, this  is ideal for daily use at home or work. Whether for a birthday, graduation, or spontaneous gesture, it’s a thoughtful gift she’ll cherish with every sip.',
+    category: 'clothing',
     model: 'sweatshirt',
   },
 ];

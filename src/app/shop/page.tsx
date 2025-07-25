@@ -33,7 +33,7 @@ function ShopContent() {
 
   // Available models based on category
   const models: Models = {
-    cloth: ['tshirt', 'hoodie', 'sweatshirt'],
+    clothing: ['tshirt', 'hoodie', 'sweatshirt'],
     phonecase: ['iphone', 'samsung', 'others'],
     all: [],
   };
@@ -78,7 +78,7 @@ function ShopContent() {
             className="p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
           >
             <option value="all">All</option>
-            <option value="cloth">Cloth</option>
+            <option value="clothing">Clothing</option>
             <option value="phonecase">Phone Case</option>
           </select>
         </div>

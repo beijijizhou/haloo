@@ -40,11 +40,11 @@ import Link from 'next/link';
 // ]
 const productCategories = [
   {
-    name: 'Cloth',
+    name: 'Clothing',
     // Source: https://www.flaticon.com/free-icons/t-shirt (search for "t-shirt")
     image: 'https://cdn-icons-png.flaticon.com/512/392/392043.png',
     description: 'Customizable apparel for every style.',
-    link: '/shop?category=cloth',
+    link: '/shop?category=clothing',
   },
   {
     name: 'Phone Cases',
