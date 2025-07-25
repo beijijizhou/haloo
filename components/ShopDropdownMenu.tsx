@@ -14,17 +14,17 @@ export default function ShopDropdownMenu({ isOpen }: DropdownMenuProps) {
     {
       name: 'Clothes',
       items: [
-        { name: 'T-shirt', href: '/shop?category=t-shirt' },
-        { name: 'Hoodie', href: '/shop?category=hoodie' },
-        { name: 'Sweatshirt', href: '/shop?category=sweatshirt' },
+        { name: 'T-shirt', href: '/shop?category=cloth&model=tshirt' },
+        { name: 'Hoodie', href: '/shop?category=cloth&model=hoodie' },
+        { name: 'Sweatshirt', href: '/shop?category=cloth&model=sweatshirt' },
       ],
     },
     {
       name: 'Phone Cases',
       items: [
-        { name: 'iPhone', href: '/shop?category=iphone-case' },
-        { name: 'Samsung', href: '/shop?category=samsung-case' },
-        { name: 'Universal', href: '/shop?category=universal-case' },
+        { name: 'iPhone', href: '/shop?category=phonecase&model=iphone' },
+        { name: 'Samsung', href: '/shop?category=phonecase&model=samsung' },
+        { name: 'Universal', href: '/shop?category=phonecase&model=others' },
       ],
     },
   ];
@@ -69,7 +69,7 @@ export default function ShopDropdownMenu({ isOpen }: DropdownMenuProps) {
                     ))}
                   </motion.div>
                 )}
- Muthafucka
+               
               </AnimatePresence>
             </div>
           ))}

@@ -11,7 +11,6 @@ interface Models {
   [key: string]: string[];
 }
 
-// Client Component that uses useSearchParams
 function ShopContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -19,6 +18,18 @@ function ShopContent() {
   // Get category and model from query parameters
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
   const [selectedModel, setSelectedModel] = useState(searchParams.get('model') || '');
+
+  // Sync state with searchParams when URL changes
+  useEffect(() => {
+    const category = searchParams.get('category') || 'all';
+    const model = searchParams.get('model') || '';
+    setSelectedCategory(category);
+    setSelectedModel(model);
+  }, [searchParams]);
+
+  // Log for debugging
+  console.log('Selected Category:', selectedCategory);
+  console.log('Selected Model:', selectedModel);
 
   // Available models based on category
   const models: Models = {
