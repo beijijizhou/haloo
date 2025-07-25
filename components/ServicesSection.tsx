@@ -13,12 +13,12 @@ const services = [
     description: 'Order as little as one piece — no minimum required.',
   },
   {
-    icon: 'https://www.clipartmax.com/png/middle/314-3149887_t-png-icon-free-t-shirt.png',
+    icon: 'https://cdn-icons-png.flaticon.com/128/5733/5733207.png',
     title: 'High-Quality Prints',
     description: 'Crisp, vibrant prints that make a lasting impression.',
   },
   {
-    icon: 'https://www.clipartmax.com/png/middle/314-3149887_t-png-icon-free-t-shirt.png',
+    icon: 'https://cdn-icons-png.flaticon.com/128/12854/12854778.png',
     title: 'Massive Daily Capacity',
     description: 'Print up to 30,000 pieces daily to meet your demand.',
   },
