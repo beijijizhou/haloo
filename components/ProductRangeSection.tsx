@@ -40,7 +40,7 @@ import Link from 'next/link';
 // ]
 const productCategories = [
   {
-    name: 'T-Shirts',
+    name: 'Cloth',
     // Source: https://www.flaticon.com/free-icons/t-shirt (search for "t-shirt")
     image: 'https://cdn-icons-png.flaticon.com/512/392/392043.png',
     description: 'Customizable apparel for every style.',
