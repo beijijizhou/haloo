@@ -4,40 +4,64 @@
 import Image from 'next/image';
 import { useState, useEffect, useRef, useCallback } from 'react'; // Import useCallback and useRef
 
-const productExamples = [
-    {
-        name: 'Pen',
-        image: '/images/display/pen.jpg',
-        alt: 'Cutie pen and strawberry',
-    },
-    {
-        name: 'First Day Tee',
-        image: '/images/display/first-day.jpg', // Note: spaces in filenames can be problematic, use hyphens or underscores
-        alt: 'Custom T-shirt for first day events',
-    },
-    {
-        name: 'Brother',
-        image: '/images/display/brother.jpg',
-        alt: 'Brother-themed custom clothing',
-    },
-    {
-        name: 'Daughter Mug',
-        image: '/images/display/daughter.jpg',
-        alt: 'Personalized mug for daughters',
-    },
-    {
-        name: 'Different',
-        image: '/images/display/different.jpg',
-        alt: 'How to be different custom apparel',
-    },
+export const tshirtDisplay = [
+  {
+    name: 'Pen',
+    image: '/images/display/pen.jpg',
+    alt: 'Cutie pen and strawberry',
+  },
+  {
+    name: 'First Day Tee',
+    image: '/images/display/first-day.jpg',
+    alt: 'Custom T-shirt for first day events',
+  },
+  {
+    name: 'Brother',
+    image: '/images/display/brother.jpg',
+    alt: 'Brother-themed custom clothing',
+  },
+  {
+    name: 'Daughter Mug',
+    image: '/images/display/daughter.jpg',
+    alt: 'Personalized mug for daughters',
+  },
+  {
+    name: 'Different',
+    image: '/images/display/different.jpg',
+    alt: 'How to be different custom apparel',
+  },
+  {
+    name: 'Dark Blue Moutan',
+    image: '/images/flower/dark-blue-moutan.png',
+    alt: 'Dark blue moutan-themed custom apparel',
+  },
+  {
+    name: 'Light Blue Moutan',
+    image: '/images/flower/light-blue-moutan.png',
+    alt: 'Light blue moutan-themed custom apparel',
+  },
+  {
+    name: 'Lotus',
+    image: '/images/flower/lotus.png',
+    alt: 'Lotus-themed custom apparel',
+  },
+  {
+    name: 'Red Moutan',
+    image: '/images/flower/red-moutan.png',
+    alt: 'Red moutan-themed custom apparel',
+  },
+  {
+    name: 'Wall Iris',
+    image: '/images/flower/wall-iris.png',
+    alt: 'Wall iris-themed custom apparel',
+  },
 ];
-
 // For a smooth loop, we'll add duplicates of the first few slides at the end.
 // This allows the animation to play out before resetting the index.
 const NUM_DUPLICATES = 1; // Number of slides to duplicate for smooth looping
 const extendedProductExamples = [
-    ...productExamples,
-    ...productExamples.slice(0, NUM_DUPLICATES),
+    ...tshirtDisplay,
+    ...tshirtDisplay.slice(0, NUM_DUPLICATES),
 ];
 
 export default function ProductDisplaySection() {
@@ -69,7 +93,7 @@ export default function ProductDisplaySection() {
 
     // Effect to handle the smooth loop back to the beginning
     useEffect(() => {
-        if (currentIndex === productExamples.length) {
+        if (currentIndex === tshirtDisplay.length) {
             // If we've reached the duplicated first slide, smoothly transition there,
             // then immediately jump back to the actual first slide without transition.
             const timeout = setTimeout(() => {
@@ -125,7 +149,7 @@ export default function ProductDisplaySection() {
                                     // width={400}
                                     // height={400}
                                     layout="fill"
-                                    objectFit="cover"
+                                    objectFit="contain"
                                 />
                                 {/* Overlay for text readability */}
                                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6 text-white">
@@ -142,12 +166,12 @@ export default function ProductDisplaySection() {
 
                     {/* Navigation Dots */}
                     <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 z-10">
-                        {productExamples.map((_, index) => ( // Dots still map to original productExamples
+                        {tshirtDisplay.map((_, index) => ( // Dots still map to original productExamples
                             <button
                                 key={index}
                                 onClick={() => handleDotClick(index)} // Use new handler
                                 className={`h-3 w-3 rounded-full transition-all duration-300 ${
-                                    (currentIndex % productExamples.length) === index ? 'bg-orange-500 w-6' : 'bg-gray-300'
+                                    (currentIndex % tshirtDisplay.length) === index ? 'bg-orange-500 w-6' : 'bg-gray-300'
                                 }`}
                                 aria-label={`Go to slide ${index + 1}`}
                             ></button>
