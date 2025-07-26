@@ -76,7 +76,7 @@ const tshirtProducts: Product[] = [
     longDescription:
       'Add a dash of charm to your stationery collection with this delightful pen. Designed with a whimsical strawberry accent and smooth ink flow, it makes writing more enjoyable. Ideal for students, creatives, or as a thoughtful gift, this pen combines functionality with personality, turning everyday tasks into moments of joy.',
     category: 'clothing',
-    model: 'tshirt',
+    model: 'Tshirts',
   },
   {
     id: 'first-day',
@@ -89,7 +89,7 @@ const tshirtProducts: Product[] = [
     longDescription:
       'Mark memorable milestones with the First Day — crafted for moments like the first day of school, work, or a fresh start in life. Made from high-quality, breathable cotton and available in various sizes, this T-shirt offers both comfort and durability. Its minimalist yet expressive design makes it perfect for photos, gifts, or daily wear to capture those once-in-a-lifetime experiences.',
     category: 'clothing',
-    model: 'tshirt',
+    model: 'Tshirts',
   },
   {
     id: 'brother',
@@ -102,7 +102,7 @@ const tshirtProducts: Product[] = [
     longDescription:
       'Express your love and appreciation with this Brother-themed T-shirt, crafted to symbolize the unique connection between siblings. Made with premium cotton and featuring a bold, modern print, it’s a great gift for birthdays, holidays, or just because. This shirt is not just apparel — it’s a reminder of loyalty, shared memories, and the lifelong bond of brotherhood.',
     category: 'clothing',
-    model: 'hoodie',
+    model: 'Hoodies',
   },
   {
     id: 'daughter',

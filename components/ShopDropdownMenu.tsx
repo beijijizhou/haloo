@@ -14,8 +14,8 @@ export default function ShopDropdownMenu({ isOpen }: DropdownMenuProps) {
     {
       name: 'Clothing',
       items: [
-        { name: 'T-shirt', href: '/shop?category=clothing&model=tshirt' },
-        { name: 'Hoodie', href: '/shop?category=clothing&model=hoodie' },
+        { name: 'Tshirts', href: '/shop?category=clothing&model=Tshirts' },
+        { name: 'Hoodies', href: '/shop?category=clothing&model=Hoodies' },
         { name: 'Sweatshirt', href: '/shop?category=clothing&model=sweatshirt' },
       ],
     },
@@ -69,7 +69,7 @@ export default function ShopDropdownMenu({ isOpen }: DropdownMenuProps) {
                     ))}
                   </motion.div>
                 )}
-               
+
               </AnimatePresence>
             </div>
           ))}

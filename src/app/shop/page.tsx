@@ -33,7 +33,7 @@ function ShopContent() {
 
   // Available models based on category
   const models: Models = {
-    clothing: ['tshirt', 'hoodie', 'sweatshirt'],
+    clothing: ['Tshirts', 'Hoodies', 'sweatshirt'],
     phonecase: ['iphone', 'samsung', 'others'],
     all: [],
   };
