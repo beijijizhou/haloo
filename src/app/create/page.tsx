@@ -11,6 +11,10 @@ export default function CreatePage() {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [formData, setFormData] = useState({
     image: null as File | null,
+    imageUrl: '',
+    category: '',
+    subcategory: '',
+    sizeOrModel: '',
     phone: '',
     email: '',
     street: '',
@@ -19,17 +23,55 @@ export default function CreatePage() {
     zipCode: '',
     country: 'United States',
     paymentInfo: '',
+    price: 29.99,
   });
 
   const handleNext = () => {
+    if (step === 1 && (!formData.image || !formData.category || !formData.subcategory || !formData.sizeOrModel)) {
+      alert('Please upload a PNG file and select a category, item, and size/model.');
+      return;
+    }
     setStep((prev) => (prev < 3 ? (prev + 1 as 1 | 2 | 3) : prev));
   };
 
   const handleBack = () => setStep((prev) => (prev > 1 ? (prev - 1 as 1 | 2 | 3) : prev));
 
-  const handleImageUpload = (file: File | null) => {
-    setFormData((prev) => ({ ...prev, image: file }));
-    if (file) handleNext();
+  const handleImageUpload = (data: { file: File | null; imageUrl: string; category: string; subcategory: string; sizeOrModel: string }) => {
+    setFormData((prev) => ({
+      ...prev,
+      image: data.file,
+      imageUrl: data.imageUrl,
+      category: data.category,
+      subcategory: data.subcategory,
+      sizeOrModel: data.sizeOrModel,
+      price: calculatePrice(data.subcategory, data.sizeOrModel),
+    }));
+    if (data.file && data.category && data.subcategory && data.sizeOrModel && data.imageUrl) handleNext();
+  };
+
+  const calculatePrice = (subcategory: string, sizeOrModel: string) => {
+    const basePrices = {
+      Tshirts: 29.99,
+      Hoodies: 39.99,
+      Sweatshirt: 34.99,
+      Apple: 19.99,
+      Samsung: 19.99,
+      Others: 19.99,
+    };
+    const sizeMultipliers = {
+      Small: 1,
+      Medium: 1,
+      Large: 1,
+      XL: 1.1,
+      '2XL': 1.2,
+      '3XL': 1.3,
+      '4XL': 1.4,
+    };
+    let price = basePrices[subcategory as keyof typeof basePrices] || 19.99;
+    if (sizeOrModel in sizeMultipliers) {
+      price *= sizeMultipliers[sizeOrModel as keyof typeof sizeMultipliers];
+    }
+    return Number(price.toFixed(2));
   };
 
   const handleContactSubmit = (contactInfo: {
@@ -45,15 +87,12 @@ export default function CreatePage() {
     handleNext();
   };
 
-  const handlePaymentSubmit = () => {
-    // Store formData in localStorage for the checkout page
-    localStorage.setItem('orderData', JSON.stringify({
+  const handlePaymentSubmit = async () => {
+    const orderData = {
       ...formData,
-      // Convert File to a URL or metadata if needed (File objects can't be JSON-serialized)
-      image: formData.image ? formData.image.name : null,
-    }));
-
-    // Redirect to the checkout page
+      image: formData.imageUrl || null,
+    };
+    localStorage.setItem('orderData', JSON.stringify(orderData));
     router.push('/checkout');
   };
 
@@ -68,7 +107,7 @@ export default function CreatePage() {
           Step 2: Contact Info
         </span>
         <span className={`text-lg ${step === 3 ? 'text-blue-600 font-semibold' : 'text-gray-500'}`}>
-          Step 3: Confirm Order
+          Step 3: Payment
         </span>
       </div>
 
@@ -78,7 +117,7 @@ export default function CreatePage() {
           <ImageUpload onUpload={handleImageUpload} />
           <button
             onClick={handleNext}
-            disabled={!formData.image}
+            disabled={!formData.image || !formData.category || !formData.subcategory || !formData.sizeOrModel}
             className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             Next
@@ -104,13 +143,15 @@ export default function CreatePage() {
 
       {step === 3 && (
         <div className="space-y-4">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-800"> Order Confirmation</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-800">Payment</h2>
           <p className="text-lg text-gray-700">
             Review your order and proceed to payment.
           </p>
           <div className="border p-4 rounded-md bg-gray-50">
             <h3 className="text-lg font-medium text-gray-700 mb-2">Order Summary</h3>
-            <p className="text-gray-600">Custom Image Upload: $29.99</p>
+            <p className="text-gray-600">
+              Custom {formData.subcategory} ({formData.category}, {formData.sizeOrModel}): ${formData.price}
+            </p>
             <p className="text-gray-600">Image: {formData.image ? formData.image.name : 'Not uploaded'}</p>
             <p className="text-gray-600">Contact: {formData.email || 'Not provided'}</p>
             <p className="text-gray-600">

@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { categories } from '../lib/constants/category';
 
 interface DropdownMenuProps {
   isOpen: boolean;
@@ -9,25 +10,6 @@ interface DropdownMenuProps {
 
 export default function ShopDropdownMenu({ isOpen }: DropdownMenuProps) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-
-  const categories = [
-    {
-      name: 'Clothing',
-      items: [
-        { name: 'Tshirts', href: '/shop?category=clothing&model=Tshirts' },
-        { name: 'Hoodies', href: '/shop?category=clothing&model=Hoodies' },
-        { name: 'Sweatshirt', href: '/shop?category=clothing&model=sweatshirt' },
-      ],
-    },
-    {
-      name: 'Phone Cases',
-      items: [
-        { name: 'Apple', href: '/shop?category=phonecase&model=iphone' },
-        { name: 'Samsung', href: '/shop?category=phonecase&model=samsung' },
-        { name: 'Others', href: '/shop?category=phonecase&model=others' },
-      ],
-    },
-  ];
 
   return (
     <AnimatePresence>
