@@ -4,18 +4,20 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useOrderStore } from '@/app/stores/useOrderStore';
 
+
+
 export default function ImageUploader() {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const { setImage } = useOrderStore();
+  const { setImage, imageUrl, file } = useOrderStore();
 
   useEffect(() => {
     return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      if (imageUrl) URL.revokeObjectURL(imageUrl);
     };
-  }, [previewUrl]);
+
+  }, [imageUrl]);
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -23,16 +25,14 @@ export default function ImageUploader() {
     setSuccess(null);
 
     if (!file) {
-      setSelectedFile(null);
-      setPreviewUrl(null);
+
       setImage({ file: null, imageUrl: '' });
       return;
     }
 
     if (file.type !== 'image/png') {
       setError('Only PNG files are allowed!');
-      setSelectedFile(null);
-      setPreviewUrl(null);
+
       setImage({ file: null, imageUrl: '' });
       return;
     }
@@ -47,9 +47,7 @@ export default function ImageUploader() {
       });
       const base64 = await base64Promise;
 
-      setSelectedFile(file);
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
+
       setSuccess('PNG file selected successfully!');
       setImage({ file, imageUrl: base64 });
     } catch (error) {
@@ -90,12 +88,12 @@ export default function ImageUploader() {
         </p>
       )}
 
-      {previewUrl && selectedFile && (
+      {imageUrl && file && (
         <div className="mt-4">
           <h3 className="text-lg font-medium text-gray-700">Preview:</h3>
           <div className="relative w-full h-64 bg-gray-100 rounded-md overflow-hidden">
             <Image
-              src={previewUrl}
+              src={imageUrl}
               alt="Uploaded PNG preview"
               fill
               style={{ objectFit: 'contain' }}

@@ -16,7 +16,7 @@ interface EmailPayload {
   subcategory?: string;
   sizeOrModel?: string;
   price?: number;
-  image?: string;
+  image: string;
 }
 
 function validateBase64Image(image: string): { isValid: boolean; content: string; mimeType: string } {
@@ -56,9 +56,9 @@ async function sendEmail(payload: EmailPayload) {
     subcategory = 'Not provided',
     sizeOrModel = 'Not provided',
     price = 0,
-    image = '',
+    image,
   } = payload;
-
+  
   const { isValid, content, mimeType } = validateBase64Image(image);
 
   // Prepare attachment if image is valid

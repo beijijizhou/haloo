@@ -7,6 +7,7 @@ import CustomOrderForm from '../../../components/CustomOrderForm';
 import ContactInfoForm from '../../../components/ContactInfoForm';
 import { useOrderStore } from '@/app/stores/useOrderStore';
 
+
 export default function CreatePage() {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -23,30 +24,7 @@ export default function CreatePage() {
   });
   const { file, imageUrl, category, subcategory, sizeOrModel, reset } = useOrderStore();
 
-  const calculatePrice = (subcategory: string, sizeOrModel: string) => {
-    const basePrices = {
-      Tshirts: 29.99,
-      Hoodies: 39.99,
-      Sweatshirt: 34.99,
-      Apple: 19.99,
-      Samsung: 19.99,
-      Others: 19.99,
-    };
-    const sizeMultipliers = {
-      Small: 1,
-      Medium: 1,
-      Large: 1,
-      XL: 1.1,
-      '2XL': 1.2,
-      '3XL': 1.3,
-      '4XL': 1.4,
-    };
-    let price = basePrices[subcategory as keyof typeof basePrices] || 19.99;
-    if (sizeOrModel in sizeMultipliers) {
-      price *= sizeMultipliers[sizeOrModel as keyof typeof sizeMultipliers];
-    }
-    return Number(price.toFixed(2));
-  };
+
 
   useEffect(() => {
     if (file && imageUrl && category && subcategory && sizeOrModel) {
@@ -56,7 +34,6 @@ export default function CreatePage() {
     }
     setFormData((prev) => ({
       ...prev,
-      price: subcategory && sizeOrModel ? calculatePrice(subcategory, sizeOrModel) : prev.price,
     }));
   }, [file, imageUrl, category, subcategory, sizeOrModel, step]);
 

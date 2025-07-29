@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useSendTestEmail } from '../hooks/useSendTestEmail';
+import { useSendEmail } from '../hooks/useSendTestEmail';
 
 export default function TestEmailPage() {
-  const { sendTestEmail, isLoading, error, success } = useSendTestEmail();
+  const { sendTestEmail, isLoading, error, success } = useSendEmail();
 
   useEffect(() => {
     sendTestEmail();
