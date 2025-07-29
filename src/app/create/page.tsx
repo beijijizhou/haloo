@@ -1,20 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import ImageUpload from '../../../components/ImageUpload';
+import CustomOrderForm from '../../../components/CustomOrderForm';
 import ContactInfoForm from '../../../components/ContactInfoForm';
+import { useOrderStore } from '@/app/stores/useOrderStore';
 
 export default function CreatePage() {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [formData, setFormData] = useState({
-    image: null as File | null,
-    imageUrl: '',
-    category: '',
-    subcategory: '',
-    sizeOrModel: '',
     phone: '',
     email: '',
     street: '',
@@ -25,29 +21,7 @@ export default function CreatePage() {
     paymentInfo: '',
     price: 29.99,
   });
-
-  const handleNext = () => {
-    if (step === 1 && (!formData.image || !formData.category || !formData.subcategory || !formData.sizeOrModel)) {
-      alert('Please upload a PNG file and select a category, item, and size/model.');
-      return;
-    }
-    setStep((prev) => (prev < 3 ? (prev + 1 as 1 | 2 | 3) : prev));
-  };
-
-  const handleBack = () => setStep((prev) => (prev > 1 ? (prev - 1 as 1 | 2 | 3) : prev));
-
-  const handleImageUpload = (data: { file: File | null; imageUrl: string; category: string; subcategory: string; sizeOrModel: string }) => {
-    setFormData((prev) => ({
-      ...prev,
-      image: data.file,
-      imageUrl: data.imageUrl,
-      category: data.category,
-      subcategory: data.subcategory,
-      sizeOrModel: data.sizeOrModel,
-      price: calculatePrice(data.subcategory, data.sizeOrModel),
-    }));
-    if (data.file && data.category && data.subcategory && data.sizeOrModel && data.imageUrl) handleNext();
-  };
+  const { file, imageUrl, category, subcategory, sizeOrModel, reset } = useOrderStore();
 
   const calculatePrice = (subcategory: string, sizeOrModel: string) => {
     const basePrices = {
@@ -74,6 +48,28 @@ export default function CreatePage() {
     return Number(price.toFixed(2));
   };
 
+  useEffect(() => {
+    if (file && imageUrl && category && subcategory && sizeOrModel) {
+      if (step === 1) {
+        setStep(2);
+      }
+    }
+    setFormData((prev) => ({
+      ...prev,
+      price: subcategory && sizeOrModel ? calculatePrice(subcategory, sizeOrModel) : prev.price,
+    }));
+  }, [file, imageUrl, category, subcategory, sizeOrModel, step]);
+
+  const handleNext = () => {
+    if (step === 1 && (!file || !category || !subcategory || !sizeOrModel)) {
+      alert('Please upload a PNG file and select a category, item, and size/model.');
+      return;
+    }
+    setStep((prev) => (prev < 3 ? (prev + 1 as 1 | 2 | 3) : prev));
+  };
+
+  const handleBack = () => setStep((prev) => (prev > 1 ? (prev - 1 as 1 | 2 | 3) : prev));
+
   const handleContactSubmit = (contactInfo: {
     phone: string;
     email: string;
@@ -84,15 +80,19 @@ export default function CreatePage() {
     country: string;
   }) => {
     setFormData((prev) => ({ ...prev, ...contactInfo }));
-    handleNext();
+    setStep(3);
   };
 
   const handlePaymentSubmit = async () => {
     const orderData = {
+      image: imageUrl || null,
+      category,
+      subcategory,
+      sizeOrModel,
       ...formData,
-      image: formData.imageUrl || null,
     };
     localStorage.setItem('orderData', JSON.stringify(orderData));
+    reset();
     router.push('/checkout');
   };
 
@@ -114,10 +114,10 @@ export default function CreatePage() {
       {step === 1 && (
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">Upload Your Image</h2>
-          <ImageUpload onUpload={handleImageUpload} />
+          <CustomOrderForm />
           <button
             onClick={handleNext}
-            disabled={!formData.image || !formData.category || !formData.subcategory || !formData.sizeOrModel}
+            disabled={!file || !category || !subcategory || !sizeOrModel}
             className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             Next
@@ -144,15 +144,13 @@ export default function CreatePage() {
       {step === 3 && (
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">Payment</h2>
-          <p className="text-lg text-gray-700">
-            Review your order and proceed to payment.
-          </p>
+          <p className="text-lg text-gray-700">Review your order and proceed to payment.</p>
           <div className="border p-4 rounded-md bg-gray-50">
             <h3 className="text-lg font-medium text-gray-700 mb-2">Order Summary</h3>
             <p className="text-gray-600">
-              Custom {formData.subcategory} ({formData.category}, {formData.sizeOrModel}): ${formData.price}
+              Custom {subcategory} ({category}, {sizeOrModel}): ${formData.price}
             </p>
-            <p className="text-gray-600">Image: {formData.image ? formData.image.name : 'Not uploaded'}</p>
+            <p className="text-gray-600">Image: {file ? file.name : 'Not uploaded'}</p>
             <p className="text-gray-600">Contact: {formData.email || 'Not provided'}</p>
             <p className="text-gray-600">
               Address: {formData.street}, {formData.city}, {formData.state} {formData.zipCode}, {formData.country}
