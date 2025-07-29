@@ -27,9 +27,6 @@ function ShopContent() {
     setSelectedModel(model);
   }, [searchParams]);
 
-  // Log for debugging
-  console.log('Selected Category:', selectedCategory);
-  console.log('Selected Model:', selectedModel);
 
   // Available models based on category
   const models: Models = {

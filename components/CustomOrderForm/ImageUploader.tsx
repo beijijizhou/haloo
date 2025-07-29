@@ -61,7 +61,7 @@ export default function ImageUploader() {
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-2xl font-semibold mb-4 text-gray-800">Upload Your Image</h2>
+        {/* <h2 className="text-2xl font-semibold mb-4 text-gray-800">Upload Your Image</h2> */}
 
         <label
           htmlFor="image-upload"
