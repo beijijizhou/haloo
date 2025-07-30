@@ -1,6 +1,6 @@
 // app/checkout/page.tsx or app/components/PaymentForm.tsx
 'use client'; // This component needs to be a Client Component
-
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import {
@@ -9,6 +9,7 @@ import {
   useStripe,
   useElements,
 } from '@stripe/react-stripe-js';
+import { useOrderStore } from '../stores/useOrderStore';
 
 // IMPORTANT: Replace with your actual Stripe publishable key
 // This key is safe to be exposed in your frontend code.
@@ -77,26 +78,22 @@ export default function CheckoutPage() {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [loadingPaymentIntent, setLoadingPaymentIntent] = useState(true);
   const [errorFetchingIntent, setErrorFetchingIntent] = useState<string | null>(null);
-
+  const {file, imageUrl, } =  useOrderStore();
   const orderAmount = 50.00; // This should come from your cart/order total
 
   useEffect(() => {
     // Fetch client secret from your Next.js API route
     const fetchClientSecret = async () => {
       try {
-        const response = await fetch('/api/create-payment-intent', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount: orderAmount }),
+        setLoadingPaymentIntent(true);
+        const response = await axios.post('/api/create-payment-intent', {
+          amount: orderAmount,
         });
-        const data = await response.json();
-        if (response.ok) {
-          setClientSecret(data.clientSecret);
-        } else {
-          setErrorFetchingIntent(data.error || 'Failed to fetch payment intent.');
-        }
-      } catch  {
-        setErrorFetchingIntent('Network error fetching payment intent.');
+        await axios.post('/api/send-confirmation-email',)
+        setClientSecret(response.data.clientSecret);
+      } catch {
+        const errorMessage = 'Network error fetching payment intent.';
+        setErrorFetchingIntent(errorMessage);
       } finally {
         setLoadingPaymentIntent(false);
       }

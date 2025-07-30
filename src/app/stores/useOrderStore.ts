@@ -7,6 +7,10 @@ interface OrderState {
   category: string;
   subcategory: string;
   sizeOrModel: string;
+  finalPrice?: number; // Optional, can be calculated later
+  quantity?: number; // Optional, can be set in the component
+  step: 1 | 2 | 3; // Current step in the order process
+  setStep: (step: 1 | 2 | 3) => void;
   setImage: (data: { file: File | null; imageUrl: string }) => void;
   setProductSelection: (data: { category: string; subcategory: string; sizeOrModel: string }) => void;
   reset: () => void;
@@ -20,6 +24,8 @@ export const useOrderStore = create<OrderState>()(
       category: '',
       subcategory: '',
       sizeOrModel: '',
+      step: 1,
+      setStep: (step) => set({ step }),
       setImage: ({ file, imageUrl }) => {
         // Validate Base64 image
         if (imageUrl) {

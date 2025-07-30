@@ -1,127 +1,45 @@
+
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useContactInfoStore } from '@/app/stores/useContactInfoStore';
+import { useOrderStore } from '@/app/stores/useOrderStore';
 
-// List of US state codes for validation
-const US_STATES = [
-  'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA',
-  'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR',
-  'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY',
-] as const;
-
-interface ContactInfo {
-  phone: string;
-  email: string;
-  street: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
-}
-
-interface ContactInfoFormProps {
-  initialData?: ContactInfo;
-  onSubmit: (data: ContactInfo) => void;
-  onBack: () => void;
-}
-
-export default function ContactInfoForm({ initialData, onSubmit, onBack }: ContactInfoFormProps) {
-  const [formData, setFormData] = useState<ContactInfo>({
-    phone: initialData?.phone || '',
-    email: initialData?.email || '',
-    street: initialData?.street || '',
-    city: initialData?.city || '',
-    state: initialData?.state || '',
-    zipCode: initialData?.zipCode || '',
-    country: initialData?.country || 'United States',
-  });
-
-  const [errors, setErrors] = useState<Partial<ContactInfo>>({});
-  const [touched, setTouched] = useState<Partial<Record<keyof ContactInfo, boolean>>>({});
-
-  // Real-time validation
-  const validateField = (name: keyof ContactInfo, value: string): string => {
-    switch (name) {
-      case 'phone':
-        return !value || !/^\d{3}\d{3}\d{4}$/.test(value)
-          ? 'Phone number must be in format 123-456-7890'
-          : '';
-      case 'email':
-        return !value || !/^\S+@\S+\.\S+$/.test(value)
-          ? 'Valid email is required'
-          : '';
-      case 'street':
-        return !value ? 'Street address is required' : '';
-      case 'city':
-        return !value ? 'City is required' : '';
-      case 'state':
-        return !value || (formData.country === 'United States' && !US_STATES.includes(value as unknown as typeof US_STATES[number]))
-          ? 'Valid state code is required (e.g., NY)'
-          : '';
-      case 'zipCode':
-        return !value || (formData.country === 'United States' && !/^\d{5}(-\d{4})?$/.test(value))
-          ? 'Valid ZIP code is required (e.g., 12345 or 12345-6789)'
-          : '';
-      case 'country':
-        return !value ? 'Country is required' : '';
-      default:
-        return '';
-    }
-  };
-
-  // Validate all fields on submit or blur
-  const validateForm = (): Partial<ContactInfo> => {
-    const newErrors: Partial<ContactInfo> = {};
-    (Object.keys(formData) as (keyof ContactInfo)[]).forEach((key) => {
-      const error = validateField(key, formData[key]);
-      if (error) newErrors[key] = error;
-    });
-    return newErrors;
-  };
-
-  // Update errors on form data change for touched fields
-  useEffect(() => {
-    const newErrors: Partial<ContactInfo> = {};
-    (Object.keys(touched) as (keyof ContactInfo)[]).forEach((key) => {
-      if (touched[key]) {
-        const error = validateField(key, formData[key]);
-        if (error) newErrors[key] = error;
-      }
-    });
-    setErrors((prev) => ({ ...prev, ...newErrors }));
-  }, [formData, touched]);
-
+export default function ContactInfoForm() {
+  const { contactInfo, errors, touched, setContactInfo, setTouched, } = useContactInfoStore();
+  const { step, setStep } = useOrderStore();
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setTouched((prev) => ({ ...prev, [name]: true }));
+    setContactInfo({ [name]: value });
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name } = e.target;
-    setTouched((prev) => ({ ...prev, [name]: true }));
+    setTouched(name as keyof typeof contactInfo, true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const formErrors = validateForm();
-    setErrors(formErrors);
-    setTouched({
-      phone: true,
-      email: true,
-      street: true,
-      city: true,
-      state: true,
-      zipCode: true,
-      country: true,
-    });
 
-    if (Object.keys(formErrors).length === 0) {
-      onSubmit(formData);
-    }
   };
+  const handleBack = () => {
+    const newStep = step > 1 ? ((step - 1) as 1 | 2 | 3) : 1;
+    setStep(newStep);
+  };
+  const handleNext = () => {
+    if (Object.values(contactInfo).some(value => value === '')) {
+      alert('Please fill in all contact information fields.');
+      return;
+    }
+    setStep(step + 1 as 1 | 2 | 3);
+  };
+  // List of US state codes for select options
+  const US_STATES = [
+    'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA',
+    'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR',
+    'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY',
+  ] as const;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -134,7 +52,7 @@ export default function ContactInfoForm({ initialData, onSubmit, onBack }: Conta
           id="phone"
           name="phone"
           type="tel"
-          value={formData.phone}
+          value={contactInfo.phone}
           onChange={handleChange}
           onBlur={handleBlur}
           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -152,7 +70,7 @@ export default function ContactInfoForm({ initialData, onSubmit, onBack }: Conta
           id="email"
           name="email"
           type="email"
-          value={formData.email}
+          value={contactInfo.email}
           onChange={handleChange}
           onBlur={handleBlur}
           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -170,7 +88,7 @@ export default function ContactInfoForm({ initialData, onSubmit, onBack }: Conta
           id="street"
           name="street"
           type="text"
-          value={formData.street}
+          value={contactInfo.street}
           onChange={handleChange}
           onBlur={handleBlur}
           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -188,7 +106,7 @@ export default function ContactInfoForm({ initialData, onSubmit, onBack }: Conta
           id="city"
           name="city"
           type="text"
-          value={formData.city}
+          value={contactInfo.city}
           onChange={handleChange}
           onBlur={handleBlur}
           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -206,7 +124,7 @@ export default function ContactInfoForm({ initialData, onSubmit, onBack }: Conta
           <select
             id="state"
             name="state"
-            value={formData.state}
+            value={contactInfo.state}
             onChange={handleChange}
             onBlur={handleBlur}
             className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -230,7 +148,7 @@ export default function ContactInfoForm({ initialData, onSubmit, onBack }: Conta
             id="zipCode"
             name="zipCode"
             type="text"
-            value={formData.zipCode}
+            value={contactInfo.zipCode}
             onChange={handleChange}
             onBlur={handleBlur}
             className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -248,7 +166,7 @@ export default function ContactInfoForm({ initialData, onSubmit, onBack }: Conta
         <select
           id="country"
           name="country"
-          value={formData.country}
+          value={contactInfo.country}
           onChange={handleChange}
           onBlur={handleBlur}
           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -261,20 +179,19 @@ export default function ContactInfoForm({ initialData, onSubmit, onBack }: Conta
           <p className="text-sm text-red-600 mt-1">{errors.country}</p>
         )}
       </div>
-      <div className="flex gap-4">
+      <div className='flex gap-4 mt-2'>
         <button
-          type="button"
-          onClick={onBack}
-          className="w-full py-2 px-4 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
-        >
+          onClick={handleBack}
+          className="w-full py-2 px-4 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
           Back
         </button>
         <button
-          type="submit"
+          onClick={handleNext}
+          disabled={contactInfo.phone === '' || contactInfo.email === '' || contactInfo.street === '' || contactInfo.city === '' || contactInfo.state === '' || contactInfo.zipCode === ''}
           className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-          disabled={Object.keys(errors).length > 0}
         >
           Next
+
         </button>
       </div>
     </form>
