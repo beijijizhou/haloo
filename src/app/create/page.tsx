@@ -7,7 +7,7 @@ import { useOrderStore } from '@/app/stores/useOrderStore';
 import OrderSummary from '../../../components/OrderSummary';
 
 export default function CreatePage() {
-  const { step} = useOrderStore();
+  const { step } = useOrderStore();
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold mb-6 text-gray-800">Create Your Order</h1>
@@ -23,22 +23,9 @@ export default function CreatePage() {
         </span>
       </div>
 
-      {step === 1 && (
-        <div className="space-y-4">
-          <CustomOrderForm />
-        </div>
-      )}
-      {step === 2 && (
-        <>
-          <ContactInfoForm />
-        </>
-      )
-      }
-      {step === 3 &&
-        <>
-          <OrderSummary />
-        </>
-      }
+      {step === 1 && <CustomOrderForm />}
+      {step === 2 && <ContactInfoForm />}
+      {step === 3 && <OrderSummary />}
       <div className="mt-8">
         <Link href="/" className="text-sm text-gray-500 hover:underline">
           ← Back to Home

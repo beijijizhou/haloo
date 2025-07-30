@@ -14,13 +14,16 @@ export default function CustomOrderForm() {
     setStep(step + 1 as 1 | 2 | 3);
   };
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {/* Left Side: Image Upload */}
-     
-      <ImageUploader />
-      {/* Right Side: Product Selection */}
-      <ProductSelector />
-      <div>
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Left Side: Image Upload */}
+
+        <ImageUploader />
+        {/* Right Side: Product Selection */}
+        <ProductSelector />
+
+      </div>
+      <div className='mt-2'>
         <button
           onClick={handleNext}
           disabled={!file || !category || !subcategory || !sizeOrModel}
@@ -29,6 +32,7 @@ export default function CustomOrderForm() {
           Next
         </button>
       </div>
-    </div>
+    </>
+
   );
 }

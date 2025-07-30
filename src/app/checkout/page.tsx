@@ -89,7 +89,7 @@ export default function CheckoutPage() {
         const response = await axios.post('/api/create-payment-intent', {
           amount: orderAmount,
         });
-        await axios.post('/api/send-confirmation-email',)
+        // await axios.post('/api/send-confirmation-email',)
         setClientSecret(response.data.clientSecret);
       } catch {
         const errorMessage = 'Network error fetching payment intent.';
