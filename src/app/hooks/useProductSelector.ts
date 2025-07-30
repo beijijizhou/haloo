@@ -1,6 +1,5 @@
-'use client';
-
 import { useState, useEffect, useCallback } from 'react';
+import { useProductStore } from '@/app/stores/useProductStore';
 
 interface Category {
   name: string;
@@ -27,37 +26,51 @@ const categories: Category[] = [
 ];
 
 const PRODUCT_SIZES = ['Small', 'Medium', 'Large', 'XL', '2XL', '3XL', '4XL'];
-
 const PHONE_MODELS = {
   Apple: ['iPhone 13', 'iPhone 14', 'iPhone 15', 'iPhone 15 Pro'],
   Samsung: ['Galaxy S21', 'Galaxy S22', 'Galaxy S23', 'Galaxy Z Fold'],
 };
+const COLORS = ['Orange', 'Grey', 'Purple', 'Blue', 'Red', 'Black', 'White'];
+const PHONE_CASE_MATERIALS = ['PVC', 'PC'];
 
 interface ProductSelectorData {
   category: string;
   subcategory: string;
   sizeOrModel: string;
+  color: string; // Made optional
+  material: string;
 }
 
 interface UseProductSelectorReturn {
   selectedCategory: string;
   selectedSubcategory: string;
   selectedSizeOrModel: string;
+  selectedColor: string;
+  selectedMaterial: string;
   categories: Category[];
   subcategories: { name: string; href: string }[];
   sizesOrModels: string[];
+  colors: string[];
+  phonecaseMaterials: string[];
   handleCategoryChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   handleSubcategoryChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   handleSizeOrModelChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  handleColorChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  handleMaterialChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 export function useProductSelector(
   onChange: (data: ProductSelectorData) => void,
   initialData?: ProductSelectorData
 ): UseProductSelectorReturn {
-  const [selectedCategory, setSelectedCategory] = useState<string>(initialData?.category || 'Clothing');
-  const [selectedSubcategory, setSelectedSubcategory] = useState<string>(initialData?.subcategory || '');
-  const [selectedSizeOrModel, setSelectedSizeOrModel] = useState<string>(initialData?.sizeOrModel || '');
+  const { category, subcategory, sizeOrModel, color, material, setProductSelection } = useProductStore();
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialData?.category || category || 'Clothing');
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string>(initialData?.subcategory || subcategory || '');
+  const [selectedSizeOrModel, setSelectedSizeOrModel] = useState<string>(initialData?.sizeOrModel || sizeOrModel || '');
+  const [selectedColor, setSelectedColor] = useState<string>(initialData?.color || color || (initialData?.category === 'Clothing' ? COLORS[0] : ''));
+  const [selectedMaterial, setSelectedMaterial] = useState<string>(
+    initialData?.material || (initialData?.category === 'Phone Cases' ? material || PHONE_CASE_MATERIALS[0] : '')
+  );
 
   const handleCategoryChange = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -67,28 +80,37 @@ export function useProductSelector(
   );
 
   const handleSubcategoryChange = useCallback(
+   
     (event: React.ChangeEvent<HTMLSelectElement>) => {
       setSelectedSubcategory(event.target.value);
     },
     []
   );
-
   const handleSizeOrModelChange = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
       setSelectedSizeOrModel(event.target.value);
-      onChange({
-        category: selectedCategory,
-        subcategory: selectedSubcategory,
-        sizeOrModel: event.target.value,
-      });
     },
-    [selectedCategory, selectedSubcategory, onChange]
+    []
+  );
+
+  const handleColorChange = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      setSelectedColor(event.target.value);
+    },
+    []
+  );
+
+  const handleMaterialChange = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      setSelectedMaterial(event.target.value);
+    },
+    []
   );
 
   useEffect(() => {
     if (selectedCategory) {
-      const category = categories.find((cat) => cat.name === selectedCategory);
-      const firstSubcategory = category?.subcategories[0]?.name || '';
+      const categoryData = categories.find((cat) => cat.name === selectedCategory);
+      const firstSubcategory = categoryData?.subcategories[0]?.name || '';
       if (selectedSubcategory !== firstSubcategory) {
         setSelectedSubcategory(firstSubcategory);
       }
@@ -101,15 +123,32 @@ export function useProductSelector(
       if (selectedSizeOrModel !== newSizeOrModel) {
         setSelectedSizeOrModel(newSizeOrModel);
       }
+      if (selectedCategory === 'Clothing' && !selectedColor) {
+        setSelectedColor(COLORS[0]);
+      } else if (selectedCategory === 'Phone Cases') {
+        setSelectedColor('');
+      }
+      if (selectedCategory === 'Phone Cases' && firstSubcategory !== 'Others') {
+        if (!selectedMaterial) {
+          setSelectedMaterial(PHONE_CASE_MATERIALS[0]);
+        }
+      } else {
+        setSelectedMaterial('');
+      }
     } else {
-      if (selectedSubcategory !== '') {
-        setSelectedSubcategory('');
-      }
-      if (selectedSizeOrModel !== '') {
-        setSelectedSizeOrModel('');
-      }
+      setSelectedSubcategory('');
+      setSelectedSizeOrModel('');
+      setSelectedColor('');
+      setSelectedMaterial('');
     }
-  }, [selectedCategory]);
+    setProductSelection({
+      category: selectedCategory,
+      subcategory: selectedSubcategory,
+      sizeOrModel: selectedSizeOrModel,
+      color: selectedCategory === 'Phone Cases' ? '' : selectedColor,
+      material: selectedMaterial,
+    });
+  }, [selectedCategory, selectedSubcategory, selectedSizeOrModel, selectedColor, selectedMaterial, setProductSelection]);
 
   useEffect(() => {
     if (selectedCategory === 'Phone Cases' && selectedSubcategory && selectedSubcategory !== 'Others') {
@@ -117,25 +156,26 @@ export function useProductSelector(
       if (selectedSizeOrModel !== newModel) {
         setSelectedSizeOrModel(newModel);
       }
+      if (!selectedMaterial) {
+        setSelectedMaterial(PHONE_CASE_MATERIALS[0]);
+      }
     } else if (selectedCategory === 'Clothing') {
       if (selectedSizeOrModel !== PRODUCT_SIZES[0]) {
         setSelectedSizeOrModel(PRODUCT_SIZES[0]);
       }
-    } else if (selectedSizeOrModel !== '') {
+      setSelectedMaterial('');
+    } else {
       setSelectedSizeOrModel('');
+      setSelectedMaterial('');
     }
-  }, [selectedSubcategory, selectedCategory]);
-
-  useEffect(() => {
-    // Only call onChange when all selections are settled
-    if (selectedCategory || selectedSubcategory || selectedSizeOrModel) {
-      onChange({
-        category: selectedCategory,
-        subcategory: selectedSubcategory,
-        sizeOrModel: selectedSizeOrModel,
-      });
-    }
-  }, [selectedCategory, selectedSubcategory, selectedSizeOrModel, onChange]);
+    setProductSelection({
+      category: selectedCategory,
+      subcategory: selectedSubcategory,
+      sizeOrModel: selectedSizeOrModel,
+      color: selectedCategory === 'Phone Cases' ? '' : selectedColor,
+      material: selectedMaterial,
+    });
+  }, [selectedSubcategory, selectedCategory, selectedSizeOrModel, selectedColor, selectedMaterial, setProductSelection]);
 
   const subcategories = selectedCategory
     ? categories.find((cat) => cat.name === selectedCategory)?.subcategories || []
@@ -152,11 +192,17 @@ export function useProductSelector(
     selectedCategory,
     selectedSubcategory,
     selectedSizeOrModel,
+    selectedColor,
+    selectedMaterial,
     categories,
     subcategories,
     sizesOrModels,
+    colors: selectedCategory === 'Clothing' ? COLORS : [], // Only show colors for Clothing
+    phonecaseMaterials: PHONE_CASE_MATERIALS,
     handleCategoryChange,
     handleSubcategoryChange,
     handleSizeOrModelChange,
+    handleColorChange,
+    handleMaterialChange,
   };
 }

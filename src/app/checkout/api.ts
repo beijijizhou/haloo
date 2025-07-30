@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { useOrderStore } from '@/app/stores/useOrderStore';
 import { useContactInfoStore } from '@/app/stores/useContactInfoStore';
+import { useProductStore } from '../stores/useProductStore';
 
 interface ConfirmationEmailResponse {
   message?: string;
@@ -9,9 +10,10 @@ interface ConfirmationEmailResponse {
 }
 
 export const sendConfirmationEmail = async (): Promise<ConfirmationEmailResponse> => {
-  const { imageUrl, category, subcategory, sizeOrModel, quantity, price} = useOrderStore.getState();
+  const { imageUrl, quantity, price } = useOrderStore.getState();
+  const { category, subcategory, sizeOrModel, color, material} = useProductStore.getState();
   const { contactInfo } = useContactInfoStore.getState();
-
+  
   const payload = {
     email: contactInfo.email,
     phone: contactInfo.phone,
@@ -33,8 +35,8 @@ export const sendConfirmationEmail = async (): Promise<ConfirmationEmailResponse
     // console.log('Sending confirmation email with payload:', payload);
     const response = await axios.post<ConfirmationEmailResponse>('/api/send-order-confirmation', payload);
     return response.data;
-  } catch  {
-    const errorMessage =  'Failed to send confirmation email';
+  } catch {
+    const errorMessage = 'Failed to send confirmation email';
     return { error: errorMessage };
   }
 };
