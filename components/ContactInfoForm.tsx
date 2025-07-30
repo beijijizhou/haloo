@@ -172,8 +172,7 @@ export default function ContactInfoForm() {
           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
         >
           <option value="United States">United States</option>
-          <option value="Canada">Canada</option>
-          <option value="Other">Other</option>
+          
         </select>
         {errors.country && touched.country && (
           <p className="text-sm text-red-600 mt-1">{errors.country}</p>
