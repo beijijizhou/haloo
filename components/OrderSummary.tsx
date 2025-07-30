@@ -1,16 +1,13 @@
-
 'use client';
-
-import { useState } from 'react';
 import { useOrderStore } from '@/app/stores/useOrderStore';
 import { useRouter } from 'next/navigation';
 export default function OrderSummary() {
     const router = useRouter();
-    const { category, subcategory, sizeOrModel, file } = useOrderStore();
+    const { category, subcategory, sizeOrModel, file,price, setQuantity, quantity} = useOrderStore();
     const { step, setStep } = useOrderStore();
-    const [quantity, setQuantity] = useState(1);
-    const fixedPrice = 50; // Fixed price in dollars
-    const finalPrice = fixedPrice * quantity;
+    
+
+    const finalPrice = price * quantity;
 
     const handleQuantityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setQuantity(Number(e.target.value));
@@ -19,10 +16,12 @@ export default function OrderSummary() {
         const newStep = step > 1 ? ((step - 1) as 1 | 2 | 3) : 1;
         setStep(newStep);
     };
-    const handlePaymentSubmit = () => {
+    const handlePaymentSubmit = async () => {
         router.push('/checkout');
+       
     };
-
+     
+    // console.log("123")
     return (
         <div className="space-y-4">
             <h2 className="text-2xl font-semibold text-gray-800">Checkout</h2>
@@ -52,7 +51,7 @@ export default function OrderSummary() {
                     </select>
                 </div>
                 <p className="text-gray-600 mt-2">
-                    Unit Price: ${fixedPrice.toFixed(2)}
+                    Unit Price: ${price.toFixed(2)}
                 </p>
                 <p className="text-gray-600 font-semibold mt-2">
                     Final Price: ${finalPrice.toFixed(2)}

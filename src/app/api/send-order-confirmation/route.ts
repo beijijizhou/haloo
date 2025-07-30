@@ -17,6 +17,7 @@ interface EmailPayload {
   sizeOrModel?: string;
   price?: number;
   image: string;
+  quantity?: number; // Optional, can be set in the component
 }
 
 function validateBase64Image(image: string): { isValid: boolean; content: string; mimeType: string } {
@@ -46,30 +47,31 @@ function validateBase64Image(image: string): { isValid: boolean; content: string
 async function sendEmail(payload: EmailPayload) {
   const {
     email,
-    phone = 'Not provided',
-    street = 'Not provided',
-    city = 'Not provided',
-    state = 'Not provided',
-    zipCode = 'Not provided',
-    country = 'Not provided',
-    category = 'Not provided',
-    subcategory = 'Not provided',
-    sizeOrModel = 'Not provided',
+    phone,
+    street,
+    city,
+    state,
+    zipCode,
+    country,
+    category,
+    subcategory,
+    sizeOrModel,
     price = 0,
     image,
+    quantity = 1, // Default to 1 if not provided
   } = payload;
-  
+
   const { isValid, content, mimeType } = validateBase64Image(image);
 
   // Prepare attachment if image is valid
   const attachments = isValid
     ? [
-        {
-          filename: `order-image.${mimeType.split('/')[1]}`,
-          content: content,
-          contentType: mimeType,
-        },
-      ]
+      {
+        filename: `order-image.${mimeType.split('/')[1]}`,
+        content: content,
+        contentType: mimeType,
+      },
+    ]
     : [];
 
   return await resend.emails.send({
@@ -85,6 +87,7 @@ async function sendEmail(payload: EmailPayload) {
         <li>Item: ${subcategory}</li>
         <li>Size/Model: ${sizeOrModel}</li>
         <li>Price: $${price.toFixed(2)}</li>
+        <li>Quantity: $${quantity}</li>
         <li>Phone: ${phone}</li>
         <li>Address: ${street}, ${city}, ${state} ${zipCode}, ${country}</li>
       </ul>
@@ -98,13 +101,11 @@ async function sendEmail(payload: EmailPayload) {
 export async function POST(request: NextRequest) {
   try {
     const payload = await request.json() as EmailPayload;
-
     if (!payload.email) {
       throw new Error('Email is required');
     }
-
     const data = await sendEmail(payload);
-
+    // const data = "yes"
     console.log('Email sent successfully to:', payload.email, data);
     return NextResponse.json(data);
   } catch (error: any) {

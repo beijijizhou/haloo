@@ -55,7 +55,7 @@ export function useProductSelector(
   onChange: (data: ProductSelectorData) => void,
   initialData?: ProductSelectorData
 ): UseProductSelectorReturn {
-  const [selectedCategory, setSelectedCategory] = useState<string>(initialData?.category || '');
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialData?.category || 'Clothing');
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>(initialData?.subcategory || '');
   const [selectedSizeOrModel, setSelectedSizeOrModel] = useState<string>(initialData?.sizeOrModel || '');
 

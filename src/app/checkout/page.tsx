@@ -10,6 +10,7 @@ import {
   useElements,
 } from '@stripe/react-stripe-js';
 import { useOrderStore } from '../stores/useOrderStore';
+import { sendConfirmationEmail } from './api';
 
 // IMPORTANT: Replace with your actual Stripe publishable key
 // This key is safe to be exposed in your frontend code.
@@ -78,9 +79,9 @@ export default function CheckoutPage() {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [loadingPaymentIntent, setLoadingPaymentIntent] = useState(true);
   const [errorFetchingIntent, setErrorFetchingIntent] = useState<string | null>(null);
-  const {file, imageUrl, } =  useOrderStore();
-  const orderAmount = 50.00; // This should come from your cart/order total
-
+  const {quantity, price} = useOrderStore();
+  const orderAmount = price * quantity; // Convert to cents for Stripe
+  console.log('Order Amount:', orderAmount);
   useEffect(() => {
     // Fetch client secret from your Next.js API route
     const fetchClientSecret = async () => {
@@ -89,7 +90,8 @@ export default function CheckoutPage() {
         const response = await axios.post('/api/create-payment-intent', {
           amount: orderAmount,
         });
-        // await axios.post('/api/send-confirmation-email',)
+        await sendConfirmationEmail();
+        
         setClientSecret(response.data.clientSecret);
       } catch {
         const errorMessage = 'Network error fetching payment intent.';
