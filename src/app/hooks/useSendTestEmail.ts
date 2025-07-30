@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useOrderStore } from '@/app/stores/useOrderStore';
-import { image64 } from './constant';
+
 
 interface TestEmailResponse {
   id?: string;
@@ -14,7 +14,7 @@ export function useSendEmail() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
-  const { file, imageUrl, category, subcategory, sizeOrModel } = useOrderStore();
+  const { file, imageUrl} = useOrderStore();
 
   const testOrderData = {
     email: 'haloowebsite@gmail.com', // Replace with real user email

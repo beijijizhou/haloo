@@ -1,6 +1,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { ContactInfo } from '../types';
 
 const US_STATES = [
   'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA',
@@ -8,15 +9,6 @@ const US_STATES = [
   'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY',
 ] as const;
 
-interface ContactInfo {
-  phone: string;
-  email: string;
-  street: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
-}
 
 interface ContactInfoState {
   contactInfo: ContactInfo;

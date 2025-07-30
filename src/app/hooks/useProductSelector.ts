@@ -33,13 +33,6 @@ const PHONE_MODELS = {
 const COLORS = ['Orange', 'Grey', 'Purple', 'Blue', 'Red', 'Black', 'White'];
 const PHONE_CASE_MATERIALS = ['PVC', 'PC'];
 
-interface ProductSelectorData {
-  category: string;
-  subcategory: string;
-  sizeOrModel: string;
-  color: string; // Made optional
-  material: string;
-}
 
 interface UseProductSelectorReturn {
   selectedCategory: string;
@@ -60,17 +53,15 @@ interface UseProductSelectorReturn {
 }
 
 export function useProductSelector(
-  onChange: (data: ProductSelectorData) => void,
-  initialData?: ProductSelectorData
+
 ): UseProductSelectorReturn {
-  const { category, subcategory, sizeOrModel, color, material, setProductSelection } = useProductStore();
-  const [selectedCategory, setSelectedCategory] = useState<string>(initialData?.category || category || 'Clothing');
-  const [selectedSubcategory, setSelectedSubcategory] = useState<string>(initialData?.subcategory || subcategory || '');
-  const [selectedSizeOrModel, setSelectedSizeOrModel] = useState<string>(initialData?.sizeOrModel || sizeOrModel || '');
-  const [selectedColor, setSelectedColor] = useState<string>(initialData?.color || color || (initialData?.category === 'Clothing' ? COLORS[0] : ''));
-  const [selectedMaterial, setSelectedMaterial] = useState<string>(
-    initialData?.material || (initialData?.category === 'Phone Cases' ? material || PHONE_CASE_MATERIALS[0] : '')
-  );
+  const { product, setProductSelection } = useProductStore();
+  const { category, subcategory, sizeOrModel, color, material } = product;
+  const [selectedCategory, setSelectedCategory] = useState<string>( category || 'Clothing');
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string>(subcategory || '');
+  const [selectedSizeOrModel, setSelectedSizeOrModel] = useState<string>(sizeOrModel || '');
+  const [selectedColor, setSelectedColor] = useState<string>( COLORS[0] || (selectedCategory === 'Phone Cases' ? '' : color) );
+  const [selectedMaterial, setSelectedMaterial] = useState<string>( PHONE_CASE_MATERIALS[0] || (selectedCategory === 'Phone Cases' ? material : '') );
 
   const handleCategoryChange = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -80,7 +71,7 @@ export function useProductSelector(
   );
 
   const handleSubcategoryChange = useCallback(
-   
+
     (event: React.ChangeEvent<HTMLSelectElement>) => {
       setSelectedSubcategory(event.target.value);
     },
@@ -118,8 +109,8 @@ export function useProductSelector(
         selectedCategory === 'Clothing'
           ? PRODUCT_SIZES[0]
           : firstSubcategory && firstSubcategory !== 'Others'
-          ? PHONE_MODELS[firstSubcategory as keyof typeof PHONE_MODELS]?.[0] || ''
-          : '';
+            ? PHONE_MODELS[firstSubcategory as keyof typeof PHONE_MODELS]?.[0] || ''
+            : '';
       if (selectedSizeOrModel !== newSizeOrModel) {
         setSelectedSizeOrModel(newSizeOrModel);
       }
@@ -185,8 +176,8 @@ export function useProductSelector(
     selectedCategory === 'Clothing'
       ? PRODUCT_SIZES
       : selectedCategory === 'Phone Cases' && selectedSubcategory && selectedSubcategory !== 'Others'
-      ? PHONE_MODELS[selectedSubcategory as keyof typeof PHONE_MODELS] || []
-      : [];
+        ? PHONE_MODELS[selectedSubcategory as keyof typeof PHONE_MODELS] || []
+        : [];
 
   return {
     selectedCategory,

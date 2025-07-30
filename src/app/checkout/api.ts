@@ -11,7 +11,8 @@ interface ConfirmationEmailResponse {
 
 export const sendConfirmationEmail = async (): Promise<ConfirmationEmailResponse> => {
   const { imageUrl, quantity, price } = useOrderStore.getState();
-  const { category, subcategory, sizeOrModel, color, material} = useProductStore.getState();
+  const { product} = useProductStore.getState();
+
   const { contactInfo } = useContactInfoStore.getState();
   
   const payload = {
@@ -22,9 +23,7 @@ export const sendConfirmationEmail = async (): Promise<ConfirmationEmailResponse
     state: contactInfo.state,
     zipCode: contactInfo.zipCode,
     country: contactInfo.country,
-    category,
-    subcategory,
-    sizeOrModel,
+    product,
     price: quantity * price, // Convert cents to dollars
     image: imageUrl || '', // Base64 image string
     quantity, // Included for potential API use
