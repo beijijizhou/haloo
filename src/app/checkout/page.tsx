@@ -91,7 +91,7 @@ export default function CheckoutPage() {
           amount: orderAmount,
         });
         await sendConfirmationEmail();
-        
+        localStorage.clear();
         setClientSecret(response.data.clientSecret);
       } catch {
         const errorMessage = 'Network error fetching payment intent.';

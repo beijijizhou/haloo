@@ -11,21 +11,23 @@ interface ConfirmationEmailResponse {
 
 export const sendConfirmationEmail = async (): Promise<ConfirmationEmailResponse> => {
   const { imageUrl, quantity, price } = useOrderStore.getState();
-  const { product} = useProductStore.getState();
+  const { product } = useProductStore.getState();
 
   const { contactInfo } = useContactInfoStore.getState();
-  
+
   const payload = {
     contactInfo,
     product,
-    price: quantity * price, // Convert cents to dollars
-    image: imageUrl || '', // Base64 image string
-    quantity, // Included for potential API use
-    // orderId, // Included for email subject or body
+    order: {
+      price: quantity * price, 
+      image: imageUrl || '', 
+      quantity, // Quantity of the product ordered
+      orderId: `ORDER-${Date.now()}`, // Generate a unique order ID
+    }
   };
 
   try {
-    // console.log('Sending confirmation email with payload:', payload);
+    
     const response = await axios.post<ConfirmationEmailResponse>('/api/send-order-confirmation', payload);
     return response.data;
   } catch {
