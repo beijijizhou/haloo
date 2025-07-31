@@ -1,13 +1,19 @@
 'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { useCartStore } from '@/app/stores/useCartStore';
 import ShopDropdownMenu from './ShopDropdownMenu';
 
 export default function Header() {
   const pathname = usePathname();
   const [isShopHovered, setIsShopHovered] = useState(false);
+  const { products } = useCartStore();
+
+  // Calculate total item count
+  const cartItemCount = products.reduce((sum, item) => sum + item.product.quantity, 0);
 
   const navLinks = [
     { href: '/', label: 'Home' },
@@ -66,10 +72,10 @@ export default function Header() {
         </div>
 
         {/* Third Column: Shopping Cart Button */}
-        <div className="hidden md:flex justify-end items-center">
+        <div className="hidden md:flex justify-end items-center relative">
           <Link
             href="/cart"
-            aria-label="Go to shopping cart"
+            aria-label={`Go to shopping cart${cartItemCount > 0 ? ` with ${cartItemCount} items` : ''}`}
             className="p-2 rounded-full hover:bg-orange-400 transition duration-300"
           >
             <Image
@@ -79,6 +85,11 @@ export default function Header() {
               height={32}
               className="object-contain"
             />
+            {cartItemCount > 0 && pathname !== '/cart' && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                {cartItemCount}
+              </span>
+            )}
           </Link>
         </div>
       </nav>

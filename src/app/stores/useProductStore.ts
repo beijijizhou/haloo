@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { get, set as Iset} from 'idb-keyval';
+import { get, set as Iset, values } from 'idb-keyval';
 import { Product } from '@/app/types/product';
 
 interface ProductState {
@@ -51,10 +51,12 @@ export const useProductStore = create<ProductState>()(
       // Load imageUrl from IndexedDB on initialization
       storage: {
         getItem: async (name) => {
-          const value =  localStorage.getItem(name);
+          const value = localStorage.getItem(name);
           const parsed = value ? JSON.parse(value) : null;
-          // console.log('Loading product from localStorage:', parsed);
-          if (parsed.product && !parsed.product.imageUrl) {
+          console.log('Loading product from localStorage:', parsed);
+          values().then((values) => console.log(values));
+
+          if (parsed.product) {
             try {
               const imageUrl = await get('current-product-image');
               parsed.product.imageUrl = imageUrl || '';
@@ -62,6 +64,7 @@ export const useProductStore = create<ProductState>()(
               console.error('Failed to load imageUrl from IndexedDB:', error);
             }
           }
+          console.log('Final parsed product state:', parsed);
           return parsed;
         },
         setItem: (name, value) => localStorage.setItem(name, JSON.stringify(value)),
