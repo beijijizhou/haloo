@@ -1,22 +1,18 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { get, set as Iset} from 'idb-keyval';
 import { Product } from '@/app/types/product';
 
-/**
- * State and actions for managing product selection.
- */
 interface ProductState {
   product: Product;
-  setProductSelection: (data: Product) => void;
-  reset: () => void;
-  clearStorage: () => void;
+  setProductSelection: (product: Partial<Product>) => void;
 }
 
 export const useProductStore = create<ProductState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       product: {
-        category: '',
+        category: 'Clothing',
         subcategory: '',
         sizeOrModel: '',
         color: '',
@@ -25,54 +21,52 @@ export const useProductStore = create<ProductState>()(
         quantity: 1,
         price: 0,
       },
-      setProductSelection: ({ category, subcategory, sizeOrModel, color, material, imageUrl, quantity, price }) =>
-        set({
-          product: {
-            category,
-            subcategory,
-            sizeOrModel,
-            color,
-            material,
-            imageUrl,
-            quantity: quantity || 1, // Default to 1 if not provided
-            price: price || 0, // Default to 0 if not provided
-          },
-        }),
-      reset: () =>
-        set({
-          product: {
-            category: '',
-            subcategory: '',
-            sizeOrModel: '',
-            color: '',
-            material: '',
-            imageUrl: '',
-            quantity: 1,
-            price: 0,
-          },
-        }),
-      clearStorage: () => {
-        try {
-          localStorage.removeItem('product-data');
-          set({
-            product: {
-              category: '',
-              subcategory: '',
-              sizeOrModel: '',
-              color: '',
-              material: '',
-              imageUrl: '',
-              quantity: 1,
-              price: 0,
-            },
-          });
-        } catch (error) {
-          console.error('Failed to clear product storage:', error);
+      setProductSelection: async (product) => {
+        const newImageUrl = product.imageUrl;
+        if (newImageUrl !== undefined) {
+          try {
+            await Iset('current-product-image', newImageUrl || '');
+          } catch (error) {
+            console.error('Failed to save imageUrl to IndexedDB:', error);
+          }
         }
+        set((state) => ({
+          product: { ...state.product, ...product },
+        }));
       },
     }),
     {
       name: 'product-data',
+      partialize: (state) => ({
+        product: {
+          category: state.product.category,
+          subcategory: state.product.subcategory,
+          sizeOrModel: state.product.sizeOrModel,
+          color: state.product.color,
+          material: state.product.material,
+          quantity: state.product.quantity,
+          price: state.product.price,
+        },
+      }),
+      // Load imageUrl from IndexedDB on initialization
+      storage: {
+        getItem: async (name) => {
+          const value =  localStorage.getItem(name);
+          const parsed = value ? JSON.parse(value) : null;
+          // console.log('Loading product from localStorage:', parsed);
+          if (parsed.product && !parsed.product.imageUrl) {
+            try {
+              const imageUrl = await get('current-product-image');
+              parsed.product.imageUrl = imageUrl || '';
+            } catch (error) {
+              console.error('Failed to load imageUrl from IndexedDB:', error);
+            }
+          }
+          return parsed;
+        },
+        setItem: (name, value) => localStorage.setItem(name, JSON.stringify(value)),
+        removeItem: (name) => localStorage.removeItem(name),
+      },
     }
   )
 );
