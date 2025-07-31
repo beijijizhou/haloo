@@ -1,13 +1,12 @@
 // app/components/AboutUsSection.tsx
 import Image from 'next/image';
-// import from "../../public/images/blueTshirt.jpg"; // Adjust the path as necessary
 export default function AboutUsSection() {
     return (
         <section className="py-16 w-full">
             <div className="container mx-auto px-4 flex flex-col md:flex-row items-center gap-12">
                 <div className="md:w-1/2">
                     <Image
-                        src="/images/blueTshirt.jpg"
+                        src="/images/logo.jpg"
                         alt="T-shirt"
                         width={600}
                         height={400}

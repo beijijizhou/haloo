@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { get, set as Iset, values } from 'idb-keyval';
 import { Product } from '@/app/types/product';
 
 interface ProductState {
@@ -22,14 +21,6 @@ export const useProductStore = create<ProductState>()(
         price: 0,
       },
       setProductSelection: async (product) => {
-        const newImageUrl = product.imageUrl;
-        if (newImageUrl !== undefined) {
-          try {
-            await Iset('current-product-image', newImageUrl || '');
-          } catch (error) {
-            console.error('Failed to save imageUrl to IndexedDB:', error);
-          }
-        }
         set((state) => ({
           product: { ...state.product, ...product },
         }));
@@ -48,8 +39,6 @@ export const useProductStore = create<ProductState>()(
           price: state.product.price,
         },
       }),
-      // Load imageUrl from IndexedDB on initialization
-
     }
   )
 );
