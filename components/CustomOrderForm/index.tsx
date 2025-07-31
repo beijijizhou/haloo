@@ -3,9 +3,12 @@
 import { useOrderStore } from '@/app/stores/useOrderStore';
 import ImageUploader from './ImageUploader';
 import ProductSelector from './ProductSelector';
+import { useProductStore } from '@/app/stores/useProductStore';
 
 export default function CustomOrderForm() {
-  const { file, category, subcategory, sizeOrModel, step, setStep } = useOrderStore();
+  const { file, step, setStep } = useOrderStore();
+  const { product } = useProductStore.getState();
+  const { category, subcategory, sizeOrModel } = product;
   const handleNext = () => {
     if (step === 1 && (!file || !category || !subcategory || !sizeOrModel)) {
       alert('Please upload a PNG file and select a category, item, and size/model.');

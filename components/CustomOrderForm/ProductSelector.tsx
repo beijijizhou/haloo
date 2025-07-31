@@ -1,8 +1,6 @@
 import { useProductSelector } from '@/app/hooks/useProductSelector';
-import { useProductStore } from '@/app/stores/useProductStore';
 
 export default function ProductSelector() {
-  const { setProductSelection } = useProductStore();
   const {
     selectedCategory,
     selectedSubcategory,
@@ -19,7 +17,7 @@ export default function ProductSelector() {
     handleSizeOrModelChange,
     handleColorChange,
     handleMaterialChange,
-  } = useProductSelector(setProductSelection);
+  } = useProductSelector();
 
   return (
     <div className="space-y-4">

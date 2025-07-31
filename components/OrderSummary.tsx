@@ -1,9 +1,12 @@
 'use client';
 import { useOrderStore } from '@/app/stores/useOrderStore';
+import { useProductStore } from '@/app/stores/useProductStore';
 import { useRouter } from 'next/navigation';
 export default function OrderSummary() {
     const router = useRouter();
-    const { category, subcategory, sizeOrModel, file,price, setQuantity, quantity} = useOrderStore();
+    const { file,price, setQuantity, quantity} = useOrderStore();
+    const { product } = useProductStore.getState();
+    const { category, subcategory, sizeOrModel } = product;
     const { step, setStep } = useOrderStore();
     
 

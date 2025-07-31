@@ -16,13 +16,7 @@ export const sendConfirmationEmail = async (): Promise<ConfirmationEmailResponse
   const { contactInfo } = useContactInfoStore.getState();
   
   const payload = {
-    email: contactInfo.email,
-    phone: contactInfo.phone,
-    street: contactInfo.street,
-    city: contactInfo.city,
-    state: contactInfo.state,
-    zipCode: contactInfo.zipCode,
-    country: contactInfo.country,
+    contactInfo,
     product,
     price: quantity * price, // Convert cents to dollars
     image: imageUrl || '', // Base64 image string
