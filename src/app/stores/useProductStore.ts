@@ -9,6 +9,7 @@ interface ProductState {
   product: Product;
   setProductSelection: (data: Product) => void;
   reset: () => void;
+  clearStorage: () => void;
 }
 
 export const useProductStore = create<ProductState>()(
@@ -18,17 +19,23 @@ export const useProductStore = create<ProductState>()(
         category: '',
         subcategory: '',
         sizeOrModel: '',
-        color: '', // Initialize as undefined
+        color: '',
         material: '',
+        imageUrl: '',
+        quantity: 1,
+        price: 0,
       },
-      setProductSelection: ({ category, subcategory, sizeOrModel, color, material }) =>
+      setProductSelection: ({ category, subcategory, sizeOrModel, color, material, imageUrl, quantity, price }) =>
         set({
           product: {
             category,
             subcategory,
             sizeOrModel,
-            color: category === 'Phone Cases' ? '' : color, // Set undefined for Phone Cases
+            color,
             material,
+            imageUrl,
+            quantity: quantity || 1, // Default to 1 if not provided
+            price: price || 0, // Default to 0 if not provided
           },
         }),
       reset: () =>
@@ -39,8 +46,30 @@ export const useProductStore = create<ProductState>()(
             sizeOrModel: '',
             color: '',
             material: '',
+            imageUrl: '',
+            quantity: 1,
+            price: 0,
           },
         }),
+      clearStorage: () => {
+        try {
+          localStorage.removeItem('product-data');
+          set({
+            product: {
+              category: '',
+              subcategory: '',
+              sizeOrModel: '',
+              color: '',
+              material: '',
+              imageUrl: '',
+              quantity: 1,
+              price: 0,
+            },
+          });
+        } catch (error) {
+          console.error('Failed to clear product storage:', error);
+        }
+      },
     }),
     {
       name: 'product-data',

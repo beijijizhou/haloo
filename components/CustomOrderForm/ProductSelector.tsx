@@ -1,4 +1,9 @@
+'use client';
+
 import { useProductSelector } from '@/app/hooks/useProductSelector';
+import { useProductStore } from '@/app/stores/useProductStore';
+import { useCartStore } from '@/app/stores/useCartStore';
+import { useRouter } from 'next/navigation';
 
 export default function ProductSelector() {
   const {
@@ -7,6 +12,7 @@ export default function ProductSelector() {
     selectedSizeOrModel,
     selectedColor,
     selectedMaterial,
+    selectedPrice,
     categories,
     subcategories,
     sizesOrModels,
@@ -17,7 +23,53 @@ export default function ProductSelector() {
     handleSizeOrModelChange,
     handleColorChange,
     handleMaterialChange,
+    
   } = useProductSelector();
+  const { product } = useProductStore();
+  const { addItem } = useCartStore();
+  const router = useRouter();
+
+  const isAddToCartDisabled = () => {
+    // Shared attributes (required for both categories)
+    const sharedValid = Boolean(
+      selectedCategory &&
+      selectedSubcategory &&
+      product.imageUrl
+
+    );
+
+    if (!sharedValid) return true;
+
+    // Category-specific attributes
+    if (selectedCategory === 'Clothing') {
+      return !selectedSizeOrModel || !selectedColor;
+    }
+
+    if (selectedCategory === 'Phone Cases') {
+      // For "Others" subcategory, sizeOrModel and material are not required
+      if (selectedSubcategory === 'Others') {
+        return false;
+      }
+      return !selectedSizeOrModel || !selectedMaterial;
+    }
+
+    return true; // Default case (should not occur with valid categories)
+  };
+
+  const handleAddToCart = () => {
+    const newProduct = {
+      category: selectedCategory,
+      subcategory: selectedSubcategory,
+      sizeOrModel: selectedSizeOrModel,
+      color: selectedCategory === 'Phone Cases' ? '' : selectedColor,
+      material: selectedMaterial,
+      imageUrl: product.imageUrl,
+      quantity: 1,
+      price: selectedPrice,
+    };
+    addItem(newProduct);
+    router.push('/cart');
+  };
 
   return (
     <div className="space-y-4">
@@ -114,7 +166,8 @@ export default function ProductSelector() {
             id="material"
             value={selectedMaterial}
             onChange={handleMaterialChange}
-            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+            disabled={selectedSubcategory === 'Others'}
+            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:bg-gray-100 disabled:cursor-not-allowed"
             aria-label="Select phone case material"
           >
             <option value="">Select Material</option>
@@ -126,6 +179,27 @@ export default function ProductSelector() {
           </select>
         </div>
       )}
+
+
+      <div>
+        <p className="text-lg font-medium text-gray-700">
+          Price: ${selectedPrice.toFixed(2)}
+        </p>
+      </div>
+
+      <div>
+        <button
+          onClick={handleAddToCart}
+          disabled={isAddToCartDisabled()}
+          className={`w-full py-3 px-8 rounded-full text-lg font-bold transition duration-300 ${
+            isAddToCartDisabled()
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-orange-500 text-white hover:bg-orange-600'
+          }`}
+        >
+          Add to Cart
+        </button>
+      </div>
     </div>
   );
 }

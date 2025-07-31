@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function HeroSection() {
   return (
-    <section className="relative w-full h-[600px] flex items-center justify-center text-center text-white overflow-hidden bg-gradient-to-r from-orange-500 to-blue-500">
+    <section className="relative w-full h-[400px] flex items-center justify-center text-center text-white overflow-hidden bg-gradient-to-r from-orange-500 to-blue-500">
       {/* Optional subtle overlay for text readability */}
       <div className="absolute inset-0 bg-black opacity-20 z-10"></div>
 

@@ -15,8 +15,6 @@ export default function Header() {
     { href: '/shop', label: 'Shop' },
     { href: '/about', label: 'About' },
     { href: '/contact', label: 'Contact' },
-    
-  
   ];
 
   return (
@@ -67,8 +65,22 @@ export default function Header() {
           })}
         </div>
 
-        {/* Third Column: Empty (Placeholder) */}
-        <div className="hidden md:block"></div>
+        {/* Third Column: Shopping Cart Button */}
+        <div className="hidden md:flex justify-end items-center">
+          <Link
+            href="/cart"
+            aria-label="Go to shopping cart"
+            className="p-2 rounded-full hover:bg-orange-400 transition duration-300"
+          >
+            <Image
+              src="https://cdn-icons-png.flaticon.com/128/3144/3144456.png"
+              alt="Shopping Cart"
+              width={32}
+              height={32}
+              className="object-contain"
+            />
+          </Link>
+        </div>
       </nav>
     </header>
   );

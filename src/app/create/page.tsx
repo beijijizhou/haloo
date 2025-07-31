@@ -15,12 +15,12 @@ export default function CreatePage() {
         <span className={`text-lg ${step === 1 ? 'text-blue-600 font-semibold' : 'text-gray-500'}`}>
           Step 1: Upload Image
         </span>
-        <span className={`text-lg ${step === 2 ? 'text-blue-600 font-semibold' : 'text-gray-500'}`}>
+        {/* <span className={`text-lg ${step === 2 ? 'text-blue-600 font-semibold' : 'text-gray-500'}`}>
           Step 2: Contact Info
         </span>
         <span className={`text-lg ${step === 3 ? 'text-blue-600 font-semibold' : 'text-gray-500'}`}>
           Step 3: Review & Checkout
-        </span>
+        </span> */}
       </div>
 
       {step === 1 && <CustomOrderForm />}

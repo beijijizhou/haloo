@@ -35,7 +35,7 @@ export default function Home() {
       <div className="flex flex-col min-h-screen">
         <main className="flex-grow container mx-auto p-4">
           <ScrollAnimatedSection>
-            <ProductDisplaySection />
+            {/* <ProductDisplaySection /> */}
             <HeroSection />
           </ScrollAnimatedSection>
 

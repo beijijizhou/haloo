@@ -1,38 +1,8 @@
+'use client';
+
 import { useState, useEffect, useCallback } from 'react';
 import { useProductStore } from '@/app/stores/useProductStore';
-
-interface Category {
-  name: string;
-  subcategories: { name: string; href: string }[];
-}
-
-const categories: Category[] = [
-  {
-    name: 'Clothing',
-    subcategories: [
-      { name: 'Tshirts', href: '/shop?category=clothing&model=Tshirts' },
-      { name: 'Hoodies', href: '/shop?category=clothing&model=Hoodies' },
-      { name: 'Sweatshirt', href: '/shop?category=clothing&model=sweatshirt' },
-    ],
-  },
-  {
-    name: 'Phone Cases',
-    subcategories: [
-      { name: 'Apple', href: '/shop?category=phonecase&model=iphone' },
-      { name: 'Samsung', href: '/shop?category=phonecase&model=samsung' },
-      { name: 'Others', href: '/shop?category=phonecase&model=others' },
-    ],
-  },
-];
-
-const PRODUCT_SIZES = ['Small', 'Medium', 'Large', 'XL', '2XL', '3XL', '4XL'];
-const PHONE_MODELS = {
-  Apple: ['iPhone 13', 'iPhone 14', 'iPhone 15', 'iPhone 15 Pro'],
-  Samsung: ['Galaxy S21', 'Galaxy S22', 'Galaxy S23', 'Galaxy Z Fold'],
-};
-const COLORS = ['Orange', 'Grey', 'Purple', 'Blue', 'Red', 'Black', 'White'];
-const PHONE_CASE_MATERIALS = ['PVC', 'PC'];
-
+import { categories, Category, PRODUCT_SIZES, PHONE_MODELS, COLORS, PHONE_CASE_MATERIALS } from './constants';
 
 interface UseProductSelectorReturn {
   selectedCategory: string;
@@ -40,6 +10,7 @@ interface UseProductSelectorReturn {
   selectedSizeOrModel: string;
   selectedColor: string;
   selectedMaterial: string;
+  selectedPrice: number;
   categories: Category[];
   subcategories: { name: string; href: string }[];
   sizesOrModels: string[];
@@ -52,121 +23,108 @@ interface UseProductSelectorReturn {
   handleMaterialChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
-export function useProductSelector(
-
-): UseProductSelectorReturn {
+export function useProductSelector(): UseProductSelectorReturn {
   const { product, setProductSelection } = useProductStore();
-  const { category, subcategory, sizeOrModel, color, material } = product;
-  const [selectedCategory, setSelectedCategory] = useState<string>( category || 'Clothing');
+  const { category, subcategory, sizeOrModel, color, material,  price } = product;
+
+  const [selectedCategory, setSelectedCategory] = useState<string>(category || 'Clothing');
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>(subcategory || '');
   const [selectedSizeOrModel, setSelectedSizeOrModel] = useState<string>(sizeOrModel || '');
-  const [selectedColor, setSelectedColor] = useState<string>( COLORS[0] || (selectedCategory === 'Phone Cases' ? '' : color) );
-  const [selectedMaterial, setSelectedMaterial] = useState<string>( PHONE_CASE_MATERIALS[0] || (selectedCategory === 'Phone Cases' ? material : '') );
+  const [selectedColor, setSelectedColor] = useState<string>(color || '');
+  const [selectedMaterial, setSelectedMaterial] = useState<string>(material || '');
 
-  const handleCategoryChange = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
-      setSelectedCategory(event.target.value);
-    },
-    []
-  );
+  const [selectedPrice, setSelectedPrice] = useState<number>(price || 0);
 
-  const handleSubcategoryChange = useCallback(
-
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
-      setSelectedSubcategory(event.target.value);
-    },
-    []
-  );
-  const handleSizeOrModelChange = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
-      setSelectedSizeOrModel(event.target.value);
-    },
-    []
-  );
-
-  const handleColorChange = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
-      setSelectedColor(event.target.value);
-    },
-    []
-  );
-
-  const handleMaterialChange = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
-      setSelectedMaterial(event.target.value);
-    },
-    []
-  );
-
-  useEffect(() => {
-    if (selectedCategory) {
-      const categoryData = categories.find((cat) => cat.name === selectedCategory);
-      const firstSubcategory = categoryData?.subcategories[0]?.name || '';
-      if (selectedSubcategory !== firstSubcategory) {
-        setSelectedSubcategory(firstSubcategory);
-      }
-      const newSizeOrModel =
-        selectedCategory === 'Clothing'
-          ? PRODUCT_SIZES[0]
-          : firstSubcategory && firstSubcategory !== 'Others'
-            ? PHONE_MODELS[firstSubcategory as keyof typeof PHONE_MODELS]?.[0] || ''
-            : '';
-      if (selectedSizeOrModel !== newSizeOrModel) {
-        setSelectedSizeOrModel(newSizeOrModel);
-      }
-      if (selectedCategory === 'Clothing' && !selectedColor) {
-        setSelectedColor(COLORS[0]);
-      } else if (selectedCategory === 'Phone Cases') {
-        setSelectedColor('');
-      }
-      if (selectedCategory === 'Phone Cases' && firstSubcategory !== 'Others') {
-        if (!selectedMaterial) {
-          setSelectedMaterial(PHONE_CASE_MATERIALS[0]);
-        }
-      } else {
-        setSelectedMaterial('');
-      }
-    } else {
-      setSelectedSubcategory('');
-      setSelectedSizeOrModel('');
-      setSelectedColor('');
-      setSelectedMaterial('');
+  // Helper function to calculate price
+  const getPrice = useCallback((category: string, subcategory: string) => {
+    if (category === 'Clothing') {
+      return subcategory === 'Tshirts' ? 19.99 : 29.99;
     }
+    if (category === 'Phone Cases') {
+      return 24.99;
+    }
+    return 0;
+  }, []);
+
+  // Helper function to get default subcategory
+  const getDefaultSubcategory = useCallback((category: string) => {
+    const categoryData = categories.find((cat) => cat.name === category);
+    return categoryData?.subcategories[0]?.name || '';
+  }, []);
+
+  // Helper function to get default size or model
+  const getDefaultSizeOrModel = useCallback((category: string, subcategory: string) => {
+    if (category === 'Clothing') {
+      return PRODUCT_SIZES[0];
+    }
+    if (category === 'Phone Cases' && subcategory && subcategory !== 'Others') {
+      return PHONE_MODELS[subcategory as keyof typeof PHONE_MODELS]?.[0] || '';
+    }
+    return '';
+  }, []);
+
+  // Consolidated useEffect for state updates
+  useEffect(() => {
+    // Reset dependent fields when category changes
+    const categoryData = categories.find((cat) => cat.name === selectedCategory);
+    const newSubcategory = selectedSubcategory || getDefaultSubcategory(selectedCategory);
+    const newSizeOrModel = selectedSizeOrModel || getDefaultSizeOrModel(selectedCategory, newSubcategory);
+    const newColor = selectedCategory === 'Phone Cases' ? '' : selectedColor || COLORS[0];
+    const newMaterial =
+      selectedCategory === 'Phone Cases' && newSubcategory !== 'Others'
+        ? selectedMaterial || PHONE_CASE_MATERIALS[0]
+        : '';
+    const newPrice = getPrice(selectedCategory, newSubcategory);
+
+    // Update state only if changes are needed
+    if (
+      selectedSubcategory !== newSubcategory ||
+      selectedSizeOrModel !== newSizeOrModel ||
+      selectedColor !== newColor ||
+      selectedMaterial !== newMaterial ||
+      selectedPrice !== newPrice
+    ) {
+      setSelectedSubcategory(newSubcategory);
+      setSelectedSizeOrModel(newSizeOrModel);
+      setSelectedColor(newColor);
+      setSelectedMaterial(newMaterial);
+      setSelectedPrice(newPrice);
+    }
+
+    // Sync with useProductStore
     setProductSelection({
       category: selectedCategory,
-      subcategory: selectedSubcategory,
-      sizeOrModel: selectedSizeOrModel,
-      color: selectedCategory === 'Phone Cases' ? '' : selectedColor,
-      material: selectedMaterial,
+      subcategory: newSubcategory,
+      sizeOrModel: newSizeOrModel,
+      color: newColor,
+      material: newMaterial,
+      imageUrl: product.imageUrl,
+      quantity: 1,
+      price: newPrice,
     });
-  }, [selectedCategory, selectedSubcategory, selectedSizeOrModel, selectedColor, selectedMaterial, setProductSelection]);
+  }, [selectedCategory, selectedSubcategory, selectedSizeOrModel, selectedColor, selectedMaterial, product.imageUrl, setProductSelection, getPrice, getDefaultSubcategory, getDefaultSizeOrModel, selectedPrice]);
 
-  useEffect(() => {
-    if (selectedCategory === 'Phone Cases' && selectedSubcategory && selectedSubcategory !== 'Others') {
-      const newModel = PHONE_MODELS[selectedSubcategory as keyof typeof PHONE_MODELS]?.[0] || '';
-      if (selectedSizeOrModel !== newModel) {
-        setSelectedSizeOrModel(newModel);
-      }
-      if (!selectedMaterial) {
-        setSelectedMaterial(PHONE_CASE_MATERIALS[0]);
-      }
-    } else if (selectedCategory === 'Clothing') {
-      if (selectedSizeOrModel !== PRODUCT_SIZES[0]) {
-        setSelectedSizeOrModel(PRODUCT_SIZES[0]);
-      }
-      setSelectedMaterial('');
-    } else {
-      setSelectedSizeOrModel('');
-      setSelectedMaterial('');
-    }
-    setProductSelection({
-      category: selectedCategory,
-      subcategory: selectedSubcategory,
-      sizeOrModel: selectedSizeOrModel,
-      color: selectedCategory === 'Phone Cases' ? '' : selectedColor,
-      material: selectedMaterial,
-    });
-  }, [selectedSubcategory, selectedCategory, selectedSizeOrModel, selectedColor, selectedMaterial, setProductSelection]);
+  const handleCategoryChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCategory(event.target.value);
+  }, []);
+
+  const handleSubcategoryChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSubcategory(event.target.value);
+  }, []);
+
+  const handleSizeOrModelChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSizeOrModel(event.target.value);
+  }, []);
+
+  const handleColorChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedColor(event.target.value);
+  }, []);
+
+  const handleMaterialChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedMaterial(event.target.value);
+  }, []);
+
+
 
   const subcategories = selectedCategory
     ? categories.find((cat) => cat.name === selectedCategory)?.subcategories || []
@@ -178,22 +136,24 @@ export function useProductSelector(
       : selectedCategory === 'Phone Cases' && selectedSubcategory && selectedSubcategory !== 'Others'
         ? PHONE_MODELS[selectedSubcategory as keyof typeof PHONE_MODELS] || []
         : [];
-
+  
   return {
     selectedCategory,
     selectedSubcategory,
     selectedSizeOrModel,
     selectedColor,
     selectedMaterial,
+    selectedPrice,
     categories,
     subcategories,
     sizesOrModels,
-    colors: selectedCategory === 'Clothing' ? COLORS : [], // Only show colors for Clothing
-    phonecaseMaterials: PHONE_CASE_MATERIALS,
+    colors: selectedCategory === 'Clothing' ? COLORS : [],
+    phonecaseMaterials: selectedCategory === 'Phone Cases' ? PHONE_CASE_MATERIALS : [],
     handleCategoryChange,
     handleSubcategoryChange,
     handleSizeOrModelChange,
     handleColorChange,
     handleMaterialChange,
+   
   };
 }

@@ -2,22 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { useOrderStore } from '@/app/stores/useOrderStore';
-
-
+import { useProductStore } from '@/app/stores/useProductStore';
 
 export default function ImageUploader() {
-  
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const { setImage, imageUrl, file } = useOrderStore();
+  const { product, setProductSelection } = useProductStore();
 
   useEffect(() => {
     return () => {
-      if (imageUrl) URL.revokeObjectURL(imageUrl);
+      if (product.imageUrl) URL.revokeObjectURL(product.imageUrl);
     };
-
-  }, [imageUrl]);
+  }, [product.imageUrl]);
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -25,15 +21,13 @@ export default function ImageUploader() {
     setSuccess(null);
 
     if (!file) {
-
-      setImage({ file: null, imageUrl: '' });
+      setProductSelection({ ...product, imageUrl: '' });
       return;
     }
 
     if (file.type !== 'image/png') {
       setError('Only PNG files are allowed!');
-
-      setImage({ file: null, imageUrl: '' });
+      setProductSelection({ ...product, imageUrl: '' });
       return;
     }
 
@@ -47,9 +41,8 @@ export default function ImageUploader() {
       });
       const base64 = await base64Promise;
 
-
       setSuccess('PNG file selected successfully!');
-      setImage({ file, imageUrl: base64 });
+      setProductSelection({ ...product, imageUrl: base64 });
     } catch (error) {
       setError('Failed to process image');
       console.error('Error:', error);
@@ -59,8 +52,6 @@ export default function ImageUploader() {
   return (
     <div className="space-y-4">
       <div>
-        {/* <h2 className="text-2xl font-semibold mb-4 text-gray-800">Upload Your Image</h2> */}
-
         <label
           htmlFor="image-upload"
           className="block text-lg font-medium text-gray-700 mb-1"
@@ -88,12 +79,12 @@ export default function ImageUploader() {
         </p>
       )}
 
-      {imageUrl && file && (
+      {product.imageUrl && (
         <div className="mt-4">
           <h3 className="text-lg font-medium text-gray-700">Preview:</h3>
           <div className="relative w-full h-64 bg-gray-100 rounded-md overflow-hidden">
             <Image
-              src={imageUrl}
+              src={product.imageUrl}
               alt="Uploaded PNG preview"
               fill
               style={{ objectFit: 'contain' }}

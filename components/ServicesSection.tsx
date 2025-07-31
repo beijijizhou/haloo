@@ -3,14 +3,14 @@ import Image from 'next/image';
 
 const services = [
   {
-    icon: 'https://cdn-icons-png.flaticon.com/512/12868/12868385.png',
+    icon: 'https://cdn-icons-png.flaticon.com/512/3159/3159310.png',
     title: 'Custom Design',
-    description: 'Bring your vision to life with our expert design team.',
+    description: 'Bring your vision to life with our expert team.',
   },
   {
     icon: 'https://cdn-icons-png.flaticon.com/128/679/679720.png',
-    title: 'Single-Piece Delivery',
-    description: 'Order as little as one piece — no minimum required.',
+    title: 'One-Piece, 24-Hour Shipping',
+    description: 'Order just one item and get it shipped in 24 hours with our fast, flexible delivery.',
   },
   {
     icon: 'https://cdn-icons-png.flaticon.com/128/5733/5733207.png',
