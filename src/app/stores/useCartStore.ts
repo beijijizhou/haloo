@@ -13,6 +13,7 @@ interface CartState {
   addProduct: (product: Product) => void;
   increaseQuantity: (id: string) => void;
   decreaseQuantity: (id: string) => void;
+  removeProduct: (id: string) => Promise<void>;
   clearCart: () => Promise<void>;
 }
 
@@ -93,6 +94,17 @@ export const useCartStore = create<CartState>()(
             )
             .filter((item) => item.product.quantity > 0),
         })),
+      removeProduct: async (id) => {
+        try {
+          await del(`cart-item-image-${id}`);
+          console.log(`Removed cart item ${id} from IndexedDB`);
+          set((state) => ({
+            products: state.products.filter((item) => item.id !== id),
+          }));
+        } catch (error) {
+          console.error(`Failed to remove cart item ${id} from IndexedDB:`, error);
+        }
+      },
       clearCart: async () => {
         try {
           // Log all cart-related entries before clearing

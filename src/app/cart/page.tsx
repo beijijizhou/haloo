@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useCartStore } from '@/app/stores/useCartStore';
 
 export default function Cart() {
-  const { products, increaseQuantity, decreaseQuantity, clearCart } = useCartStore();
+  const { products, increaseQuantity, decreaseQuantity, removeProduct, clearCart } = useCartStore();
   const isCartEmpty = products.length === 0;
 
   // Calculate total price
@@ -43,7 +43,7 @@ export default function Cart() {
                 <div key={item.id} className="bg-gray-50 p-6 rounded-lg shadow-md">
                   <div className="relative w-full h-48 mb-4 flex items-center justify-center overflow-hidden rounded-md">
                     <Image
-                      src={item.product.imageUrl}
+                      src={item.product.imageUrl || '/images/placeholder.png'}
                       alt={`${item.product.category} - ${item.product.subcategory}`}
                       width={150}
                       height={150}
@@ -67,13 +67,29 @@ export default function Cart() {
                     </p>
                   )}
                   <div className="flex items-center justify-center gap-4 mb-2">
-                    <button
-                      onClick={() => decreaseQuantity(item.id)}
-                      className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-1 px-3 rounded"
-                      aria-label={`Decrease quantity for ${item.product.subcategory}`}
-                    >
-                      -
-                    </button>
+                    {item.product.quantity === 1 ? (
+                      <button
+                        onClick={() => removeProduct(item.id)}
+                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded"
+                        aria-label={`Remove ${item.product.subcategory} from cart`}
+                      >
+                        <Image
+                          src="https://cdn-icons-png.flaticon.com/128/1214/1214428.png"
+                          alt="Delete"
+                          width={20}
+                          height={20}
+                          className="object-contain"
+                        />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => decreaseQuantity(item.id)}
+                        className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-1 px-3 rounded"
+                        aria-label={`Decrease quantity for ${item.product.subcategory}`}
+                      >
+                        -
+                      </button>
+                    )}
                     <p className="text-gray-600 text-sm">
                       Quantity: {item.product.quantity}
                     </p>

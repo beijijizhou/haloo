@@ -49,27 +49,7 @@ export const useProductStore = create<ProductState>()(
         },
       }),
       // Load imageUrl from IndexedDB on initialization
-      storage: {
-        getItem: async (name) => {
-          const value = localStorage.getItem(name);
-          const parsed = value ? JSON.parse(value) : null;
-          console.log('Loading product from localStorage:', parsed);
-          values().then((values) => console.log(values));
 
-          if (parsed.product) {
-            try {
-              const imageUrl = await get('current-product-image');
-              parsed.product.imageUrl = imageUrl || '';
-            } catch (error) {
-              console.error('Failed to load imageUrl from IndexedDB:', error);
-            }
-          }
-          console.log('Final parsed product state:', parsed);
-          return parsed;
-        },
-        setItem: (name, value) => localStorage.setItem(name, JSON.stringify(value)),
-        removeItem: (name) => localStorage.removeItem(name),
-      },
     }
   )
 );
