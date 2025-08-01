@@ -12,6 +12,7 @@ import ContactInfoForm from '../../../components/ContactInfoForm';
 import { useContactInfoStore } from '../stores/useContactInfoStore';
 import { useProductStore } from '../stores/useProductStore';
 import ProductReview from '../../../components/ProductReview';
+import { useCartStore } from '../stores/useCartStore';
 
 // IMPORTANT: Replace with your actual Stripe publishable key
 // This key is safe to be exposed in your frontend code.
@@ -27,8 +28,7 @@ export default function CheckoutPage() {
   const [errorFetchingIntent, setErrorFetchingIntent] = useState<string | null>(null);
   const { product } = useProductStore();
   const { price, quantity } = product || { price: 0.5, quantity: 1 }; // Default values if product is not available
-  const { isContactInfoValid } = useContactInfoStore();
-
+  const { clearCart } = useCartStore()
   const orderAmount = price * quantity; // Convert to cents for Stripe
   console.log('Order Amount:', orderAmount);
 
@@ -42,7 +42,7 @@ export default function CheckoutPage() {
             amount: orderAmount,
           });
           await sendConfirmationEmail();
-
+          clearCart();
           setClientSecret(response.data.clientSecret);
         }
 
@@ -55,7 +55,7 @@ export default function CheckoutPage() {
     };
 
     fetchClientSecret();
-  }, [orderAmount]); // Re-fetch if orderAmount changes
+  }, [clearCart, orderAmount]); // Re-fetch if orderAmount changes
 
 
   return (

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { get, set as setIDB, keys, del, entries } from 'idb-keyval';
+import { get, set as setIDB, del,clear, values } from 'idb-keyval';
 import { Product } from '@/app/types/product';
 
 interface CartItem {
@@ -107,20 +107,10 @@ export const useCartStore = create<CartState>()(
       },
       clearCart: async () => {
         try {
-          // Log all cart-related entries before clearing
-          const allEntries = await entries();
-          const cartEntries = allEntries.filter(([key]) => key.toString().startsWith('cart-item-image-'));
-          console.log('Cart IndexedDB entries before clearing:', cartEntries);
-
-          // Delete only cart-related entries
-          for (const [key] of cartEntries) {
-            await del(key);
-          }
-
+          clear();
+          values().then((v)=>console.log('Cleared IndexedDB entries:', v));
+          localStorage.removeItem('cart-data');
           set({ products: [] });
-          // Log remaining entries to confirm clearing
-          const remainingEntries = await entries();
-          console.log('Cart IndexedDB entries after clearing:', remainingEntries);
         } catch (error) {
           console.error('Failed to clear cart IndexedDB entries:', error);
         }
@@ -129,42 +119,49 @@ export const useCartStore = create<CartState>()(
     {
       name: 'cart-data',
       partialize: (state) => ({
-        state: {
-          products: state.products.map((item) => ({
-            id: item.id,
-            product: {
-              category: item.product.category,
-              subcategory: item.product.subcategory,
-              sizeOrModel: item.product.sizeOrModel,
-              color: item.product.color,
-              material: item.product.material,
-              quantity: item.product.quantity,
-              price: item.product.price,
-            },
-          })),
-        },
+        products: state.products.map((item) => ({
+          id: item.id,
+          product: {
+            category: item.product.category,
+            subcategory: item.product.subcategory,
+            sizeOrModel: item.product.sizeOrModel,
+            color: item.product.color,
+            material: item.product.material,
+            quantity: item.product.quantity,
+            price: item.product.price,
+          },
+        })),
       }),
       storage: {
         getItem: async (name) => {
           try {
-            const value = await localStorage.getItem(name);
-            const parsed = value
-              ? JSON.parse(value)
-              : { state: { products: [] } };
-            if (parsed && parsed.state && parsed.state.products) {
-              const productsWithImages = await Promise.all(
-                parsed.state.products.map(async (item: CartItem) => {
+            const value = localStorage.getItem(name);
+            let parsed = value ? JSON.parse(value) : { products: [] };
+            // Handle nested state objects
+            while (parsed.state && parsed.state.products) {
+              parsed = parsed.state;
+            }
+            const products = parsed.products || [];
+            const productsWithImages = await Promise.all(
+              products.map(async (item: CartItem) => {
+                try {
                   const imageUrl = await get(`cart-item-image-${item.id}`);
-                  console.log(`Loaded imageUrl for cart item ${item.id}:`, imageUrl ? 'Present' : 'Empty');
+                  // console.log(`Loaded imageUrl for cart item ${item.id}:`, imageUrl ? 'Present' : 'Empty');
                   return {
                     ...item,
                     product: { ...item.product, imageUrl: imageUrl || '' },
                   };
-                })
-              );
-              parsed.state.products = productsWithImages;
-            }
-            return parsed;
+                } catch (error) {
+                  console.error(`Failed to load imageUrl for cart item ${item.id}:`, error);
+                  return {
+                    ...item,
+                    product: { ...item.product, imageUrl: '' },
+                  };
+                }
+              })
+            );
+            // console.log('Loaded cart from localStorage:', { products: productsWithImages });
+            return { state: { products: productsWithImages } };
           } catch (error) {
             console.error('Failed to load cart from localStorage or IndexedDB:', error);
             return { state: { products: [] } };
