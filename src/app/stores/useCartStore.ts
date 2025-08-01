@@ -151,7 +151,6 @@ export const useCartStore = create<CartState>()(
             const parsed = value
               ? JSON.parse(value)
               : { state: { products: [] } };
-            console.log('Loading cart from localStorage:', parsed);
             if (parsed && parsed.state && parsed.state.products) {
               const productsWithImages = await Promise.all(
                 parsed.state.products.map(async (item: CartItem) => {
@@ -164,7 +163,6 @@ export const useCartStore = create<CartState>()(
                 })
               );
               parsed.state.products = productsWithImages;
-              console.log('Final parsed cart state:', parsed);
             }
             return parsed;
           } catch (error) {
