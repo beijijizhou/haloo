@@ -31,7 +31,23 @@ export default function ContactInfoForm() {
 
   return (
     <form className="space-y-4">
-      <h2 className="text-2xl font-semibold mb-4 text-gray-800">Contact Information</h2>
+      <h2 className="text-2xl font-semibold mb-2 text-gray-800">Contact Information</h2>
+      <p className="text-sm text-gray-600 mb-4">All fields marked with <span className="text-red-600">*</span> are required.</p>
+      <div>
+        <label htmlFor="fullName" className="block text-lg font-medium text-gray-700 mb-1">
+          Full Name <span className="text-red-600">*</span>
+        </label>
+        <input
+          id="fullName"
+          type="text"
+          {...register('fullName', { required: 'Full name is required' })}
+          className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+          placeholder="John Doe"
+        />
+        {errors.fullName && (
+          <p className="text-sm text-red-600 mt-1">{errors.fullName.message}</p>
+        )}
+      </div>
       <div>
         <label htmlFor="phone" className="block text-lg font-medium text-gray-700 mb-1">
           Phone Number
@@ -40,7 +56,6 @@ export default function ContactInfoForm() {
           id="phone"
           type="tel"
           {...register('phone', {
-            required: 'Phone number is required',
             pattern: {
               value: /^\d{3}\d{3}\d{4}$/,
               message: 'Phone number must be in format 1234567890',
@@ -55,7 +70,7 @@ export default function ContactInfoForm() {
       </div>
       <div>
         <label htmlFor="email" className="block text-lg font-medium text-gray-700 mb-1">
-          Email Address
+          Email Address <span className="text-red-600">*</span>
         </label>
         <input
           id="email"
@@ -76,7 +91,7 @@ export default function ContactInfoForm() {
       </div>
       <div>
         <label htmlFor="street" className="block text-lg font-medium text-gray-700 mb-1">
-          Street Address
+          Street Address <span className="text-red-600">*</span>
         </label>
         <input
           id="street"
@@ -91,7 +106,7 @@ export default function ContactInfoForm() {
       </div>
       <div>
         <label htmlFor="city" className="block text-lg font-medium text-gray-700 mb-1">
-          City
+          City <span className="text-red-600">*</span>
         </label>
         <input
           id="city"
@@ -107,7 +122,7 @@ export default function ContactInfoForm() {
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label htmlFor="state" className="block text-lg font-medium text-gray-700 mb-1">
-            State
+            State <span className="text-red-600">*</span>
           </label>
           <select
             id="state"
@@ -131,7 +146,7 @@ export default function ContactInfoForm() {
         </div>
         <div>
           <label htmlFor="zipCode" className="block text-lg font-medium text-gray-700 mb-1">
-            ZIP Code
+            ZIP Code <span className="text-red-600">*</span>
           </label>
           <input
             id="zipCode"
@@ -153,7 +168,7 @@ export default function ContactInfoForm() {
       </div>
       <div>
         <label htmlFor="country" className="block text-lg font-medium text-gray-700 mb-1">
-          Country
+          Country <span className="text-red-600">*</span>
         </label>
         <select
           id="country"

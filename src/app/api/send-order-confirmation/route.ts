@@ -34,11 +34,11 @@ function validateBase64Image(image: string): { isValid: boolean; content: string
 
 async function sendEmail(payload: ConfirmationEmailPayload) {
   const {
-    contactInfo: { email, phone, street, city, state, zipCode },
+    contactInfo: { fullName, email, phone, street, city, state, zipCode },
     product: { category = 'N/A', subcategory = 'N/A', sizeOrModel = 'N/A', color = 'N/A', material = 'N/A' },
     order: { price = 0, image = '', quantity = 1, orderId = 'N/A' },
   } = payload;
-
+  console.log('Sending confirmation email with payload:', payload);
   const { isValid, content, mimeType } = validateBase64Image(image);
 
   const attachments = isValid
@@ -57,7 +57,7 @@ async function sendEmail(payload: ConfirmationEmailPayload) {
     subject: `Order Confirmation - ${orderId}`,
     html: `
       <h1>Order Confirmation</h1>
-      <p>Thank you for your order!</p>
+      <p>${fullName}, Thank you for your order!</p>
       <p>Order ID: ${orderId}</p>
       <p>Details:</p>
       <ul>

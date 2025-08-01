@@ -1,6 +1,7 @@
 export interface ContactInfo {
-  email: string;
+  fullName: string;
   phone: string;
+  email: string;
   street: string;
   city: string;
   state: string;

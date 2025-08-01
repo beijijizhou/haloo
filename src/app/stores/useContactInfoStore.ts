@@ -14,6 +14,7 @@ export const useContactInfoStore = create<ContactInfoState>()(
   persist(
     (set) => ({
       contactInfo: {
+        fullName: '',
         phone: '',
         email: '',
         street: '',
@@ -31,6 +32,7 @@ export const useContactInfoStore = create<ContactInfoState>()(
       reset: () =>
         set({
           contactInfo: {
+            fullName: '',
             phone: '',
             email: '',
             street: '',
