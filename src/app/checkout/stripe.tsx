@@ -4,6 +4,8 @@ import {
   useElements,
 } from '@stripe/react-stripe-js';
 import { useState } from 'react';
+import { sendConfirmationEmail } from './api';
+import { useCartStore } from '../stores/useCartStore';
 
 // A sub-component that uses useStripe and useElements hooks
 export function CheckoutForm({ amount }: { amount: number }) {
@@ -11,7 +13,7 @@ export function CheckoutForm({ amount }: { amount: number }) {
   const elements = useElements();
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
+  const { clearCart } = useCartStore();
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -35,13 +37,19 @@ export function CheckoutForm({ amount }: { amount: number }) {
     // This point will only be reached if there's an immediate error when
     // confirming the payment. Otherwise, your customer will be redirected to
     // your `return_url`.
-    if (error.type === "card_error" || error.type === "validation_error") {
-      setMessage(error.message || "An unexpected error occurred.");
+    setIsLoading(false);
+    if (error) {
+      // Show error to your customer (e.g., insufficient funds)
+      setMessage(error.message || 'An unexpected error occurred.');
     } else {
-      setMessage("An unexpected error occurred.");
+      // Payment succeeded, show a success message or redirect
+      setMessage('Payment successful! Thank you for your order.');
+      await sendConfirmationEmail();
+      clearCart();
     }
 
-    setIsLoading(false);
+    
+    
   };
 
   return (
@@ -62,3 +70,5 @@ export function CheckoutForm({ amount }: { amount: number }) {
     </form>
   );
 }
+
+

@@ -6,7 +6,6 @@ import { loadStripe } from '@stripe/stripe-js';
 import {
   Elements,
 } from '@stripe/react-stripe-js';
-import { sendConfirmationEmail } from './api';
 import { CheckoutForm } from './stripe';
 import ContactInfoForm from '../../../components/ContactInfoForm';
 import { useContactInfoStore } from '../stores/useContactInfoStore';
@@ -29,6 +28,7 @@ export default function CheckoutPage() {
   const { product } = useProductStore();
   const { price, quantity } = product || { price: 0.5, quantity: 1 }; // Default values if product is not available
   const { clearCart } = useCartStore()
+  const { isContactInfoValid } = useContactInfoStore();
   const orderAmount = price * quantity; // Convert to cents for Stripe
   console.log('Order Amount:', orderAmount);
 
@@ -41,8 +41,7 @@ export default function CheckoutPage() {
           const response = await axios.post('/api/create-payment-intent', {
             amount: orderAmount,
           });
-          await sendConfirmationEmail();
-          clearCart();
+
           setClientSecret(response.data.clientSecret);
         }
 
@@ -57,7 +56,7 @@ export default function CheckoutPage() {
     fetchClientSecret();
   }, [clearCart, orderAmount]); // Re-fetch if orderAmount changes
 
-
+  console.log(isContactInfoValid)
   return (
     <div className="container mx-auto px-4 py-16">
       <h1 className="text-4xl font-bold mb-12 text-center text-gray-800">Checkout</h1>
@@ -74,7 +73,7 @@ export default function CheckoutPage() {
               <div className="text-center py-10 text-red-600">
                 Error: {errorFetchingIntent}
               </div>
-            ) : clientSecret && stripePromise ? (
+            ) : isContactInfoValid && clientSecret && stripePromise ? (
               <Elements options={{ clientSecret }} stripe={stripePromise}>
                 <CheckoutForm amount={orderAmount} />
               </Elements>
