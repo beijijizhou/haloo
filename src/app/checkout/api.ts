@@ -1,6 +1,5 @@
 
 import axios from 'axios';
-import { useOrderStore } from '@/app/stores/useOrderStore';
 import { useContactInfoStore } from '@/app/stores/useContactInfoStore';
 import { useProductStore } from '../stores/useProductStore';
 
@@ -10,9 +9,8 @@ interface ConfirmationEmailResponse {
 }
 
 export const sendConfirmationEmail = async (): Promise<ConfirmationEmailResponse> => {
-  const { imageUrl, quantity, price } = useOrderStore.getState();
   const { product } = useProductStore.getState();
-
+  const { price, quantity, imageUrl } = product || { price: 0.5, quantity: 1, imageUrl: '' }; // Default values if product is not available
   const { contactInfo } = useContactInfoStore.getState();
 
   const payload = {

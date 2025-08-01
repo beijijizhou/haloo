@@ -6,11 +6,11 @@ import { loadStripe } from '@stripe/stripe-js';
 import {
   Elements,
 } from '@stripe/react-stripe-js';
-import { useOrderStore } from '../stores/useOrderStore';
 import { sendConfirmationEmail } from './api';
 import { CheckoutForm } from './stripe';
 import ContactInfoForm from '../../../components/ContactInfoForm';
 import { useContactInfoStore } from '../stores/useContactInfoStore';
+import { useProductStore } from '../stores/useProductStore';
 
 // IMPORTANT: Replace with your actual Stripe publishable key
 // This key is safe to be exposed in your frontend code.
@@ -24,21 +24,27 @@ export default function CheckoutPage() {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [loadingPaymentIntent, setLoadingPaymentIntent] = useState(true);
   const [errorFetchingIntent, setErrorFetchingIntent] = useState<string | null>(null);
-  const {quantity, price} = useOrderStore();
+  const { product } = useProductStore();
+  const { price, quantity } = product || { price: 0.5, quantity: 1 }; // Default values if product is not available
   const { isContactInfoValid } = useContactInfoStore();
+  
   const orderAmount = price * quantity; // Convert to cents for Stripe
-  // console.log('Order Amount:', orderAmount);
+  console.log('Order Amount:', orderAmount);
+
   useEffect(() => {
     // Fetch client secret from your Next.js API route
     const fetchClientSecret = async () => {
       try {
         setLoadingPaymentIntent(true);
-        const response = await axios.post('/api/create-payment-intent', {
-          amount: orderAmount,
-        });
-        // await sendConfirmationEmail();
-        localStorage.clear();
-        setClientSecret(response.data.clientSecret);
+        if (orderAmount > 0) {
+          const response = await axios.post('/api/create-payment-intent', {
+            amount: orderAmount,
+          });
+          await sendConfirmationEmail();
+          
+          setClientSecret(response.data.clientSecret);
+        }
+
       } catch {
         const errorMessage = 'Network error fetching payment intent.';
         setErrorFetchingIntent(errorMessage);
@@ -50,16 +56,8 @@ export default function CheckoutPage() {
     fetchClientSecret();
   }, [orderAmount]); // Re-fetch if orderAmount changes
 
-  // if (loadingPaymentIntent) {
-  //   return <div className="text-center py-10">Loading payment form...</div>;
-  // }
 
-  // if (errorFetchingIntent) {
-  //   return <div className="text-center py-10 text-red-600">Error: {errorFetchingIntent}</div>;
-  // }
-  console.log(isContactInfoValid)
-  // Render the Elements provider once clientSecret is available
-return (
+  return (
     <div className="container mx-auto px-4 py-16">
       <h1 className="text-4xl font-bold mb-12 text-center text-gray-800">Checkout</h1>
       <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
