@@ -11,6 +11,7 @@ import { CheckoutForm } from './stripe';
 import ContactInfoForm from '../../../components/ContactInfoForm';
 import { useContactInfoStore } from '../stores/useContactInfoStore';
 import { useProductStore } from '../stores/useProductStore';
+import ProductReview from '../../../components/ProductReview';
 
 // IMPORTANT: Replace with your actual Stripe publishable key
 // This key is safe to be exposed in your frontend code.
@@ -27,7 +28,7 @@ export default function CheckoutPage() {
   const { product } = useProductStore();
   const { price, quantity } = product || { price: 0.5, quantity: 1 }; // Default values if product is not available
   const { isContactInfoValid } = useContactInfoStore();
-  
+
   const orderAmount = price * quantity; // Convert to cents for Stripe
   console.log('Order Amount:', orderAmount);
 
@@ -41,7 +42,7 @@ export default function CheckoutPage() {
             amount: orderAmount,
           });
           await sendConfirmationEmail();
-          
+
           setClientSecret(response.data.clientSecret);
         }
 
@@ -64,30 +65,25 @@ export default function CheckoutPage() {
         <div>
           <ContactInfoForm />
         </div>
-        <div>
-          {isContactInfoValid ? (
-            <>
-              {loadingPaymentIntent && (
-                <div className="text-center py-10">Loading payment form...</div>
-              )}
-              {errorFetchingIntent && (
-                <div className="text-center py-10 text-red-600">
-                  Error: {errorFetchingIntent}
-                </div>
-              )}
-              {clientSecret && stripePromise && (
-                <Elements options={{ clientSecret }} stripe={stripePromise}>
-                  <CheckoutForm amount={orderAmount} />
-                </Elements>
-              )}
-            </>
-          ) : (
-            <div className="p-6 bg-gray-100 rounded-lg shadow-md text-center">
-              <p className="text-lg text-gray-600">
-                Please complete the contact information form to proceed with payment.
-              </p>
-            </div>
-          )}
+        <div className="flex flex-col gap-8">
+          <ProductReview />
+          <div>
+            {loadingPaymentIntent ? (
+              <div className="text-center py-10">Loading payment form...</div>
+            ) : errorFetchingIntent ? (
+              <div className="text-center py-10 text-red-600">
+                Error: {errorFetchingIntent}
+              </div>
+            ) : clientSecret && stripePromise ? (
+              <Elements options={{ clientSecret }} stripe={stripePromise}>
+                <CheckoutForm amount={orderAmount} />
+              </Elements>
+            ) : (
+              <div className="p-6 bg-gray-100 rounded-lg shadow-md text-center">
+                <p className="text-lg text-gray-600">Unable to load payment form.</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
