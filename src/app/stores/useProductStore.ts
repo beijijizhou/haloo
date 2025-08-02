@@ -1,44 +1,66 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { Product } from '@/app/types/product';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { get, set } from 'idb-keyval';
 
-interface ProductState {
+export type Product = {
+  id: string;
+  imageUrl: string;
+  color: string;
+  size: string;
+  useProcessedImage: boolean;
+  processedImage: string | null;
+};
+
+type ProductStore = {
   product: Product;
   setProductSelection: (product: Partial<Product>) => void;
-}
+  setUseProcessedImage: (useProcessed: boolean) => void;
+  setProcessedImage: (processedImage: string | null) => void;
+};
 
-export const useProductStore = create<ProductState>()(
+export const useProductStore = create<ProductStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       product: {
-        category: 'Clothing',
-        subcategory: '',
-        sizeOrModel: '',
-        color: '',
-        material: '',
+        id: '',
         imageUrl: '',
-        quantity: 1,
-        price: 0,
+        color: '',
+        size: '',
+        useProcessedImage: true,
+        processedImage: null,
       },
-      setProductSelection: async (product) => {
+      setProductSelection: (newProduct) =>
         set((state) => ({
-          product: { ...state.product, ...product },
-        }));
-      },
+          product: {
+            ...state.product,
+            ...newProduct,
+            useProcessedImage: newProduct.imageUrl !== undefined ? true : state.product.useProcessedImage,
+            processedImage: newProduct.imageUrl !== undefined ? null : state.product.processedImage,
+          },
+        })),
+      setUseProcessedImage: (useProcessed) =>
+        set((state) => ({
+          product: { ...state.product, useProcessedImage: useProcessed },
+        })),
+      setProcessedImage: (processedImage) =>
+        set((state) => ({
+          product: { ...state.product, processedImage },
+        })),
     }),
     {
-      name: 'product-data',
-      partialize: (state) => ({
-        product: {
-          category: state.product.category,
-          subcategory: state.product.subcategory,
-          sizeOrModel: state.product.sizeOrModel,
-          color: state.product.color,
-          material: state.product.material,
-          quantity: state.product.quantity,
-          price: state.product.price,
+      name: 'product-store',
+      storage: createJSONStorage(() => ({
+        getItem: async (name) => {
+          const value = await get(name);
+          return value ? JSON.stringify(value) : null;
         },
-      }),
+        setItem: async (name, value) => {
+          await set(name, JSON.parse(value));
+        },
+        removeItem: async (name) => {
+          await set(name, undefined);
+        },
+      })),
     }
   )
 );

@@ -1,6 +1,6 @@
 'use client';
 
-import ImagePreview from './ImagePreview';
+import ProductPreview from './ProductPreview';
 import ImageUploader from './ImageUploader';
 import ProductSelector from './ProductSelector';
 
@@ -13,7 +13,7 @@ export default function CustomOrderForm() {
         <ImageUploader />
         {/* Right Side: Product Selection */}
         <ProductSelector />
-        <ImagePreview />
+        <ProductPreview />
       </div>
 
     </>
