@@ -6,8 +6,8 @@ import StaticProductPreview from '../StaticProductPreview';
 export default function ProductPreview() {
   const { product, setUseProcessedUrl } = useProductStore();
   const { image } = product;
-  const { url, processedUrl, useProcessedUrl } = image;
-  console.log('ProductPreview: processedUrl:', processedUrl);
+  const { url, useProcessedUrl } = image;
+  // console.log('ProductPreview: processedUrl:', processedUrl);
 
   return (
     <div className="space-y-4">

@@ -7,9 +7,8 @@ import { Product } from '@/app/types';
 export default function StaticProductPreview({ product }: { product: Product }) {
   const { image } = product;
   const { url, processedUrl, useProcessedUrl } = image;
-  console.log('StaticProductPreview: processedUrl:', processedUrl);
+  // console.log('StaticProductPreview: processedUrl:', processedUrl);
   const tshirtColor = colorMap[product.color] || colorMap.default;
-
   return (
     <div className="relative w-full h-64 bg-gray-100 rounded-md overflow-hidden">
       <Image

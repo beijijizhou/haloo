@@ -66,7 +66,6 @@ export function useProductSelector(): UseProductSelectorReturn {
   // Consolidated useEffect for state updates
   useEffect(() => {
     // Reset dependent fields when category changes
-    const categoryData = categories.find((cat) => cat.name === selectedCategory);
     const newSubcategory = selectedSubcategory || getDefaultSubcategory(selectedCategory);
     const newSizeOrModel = selectedSizeOrModel || getDefaultSizeOrModel(selectedCategory, newSubcategory);
     const newColor = selectedCategory === 'Phone Cases' ? '' : selectedColor || COLORS[0];

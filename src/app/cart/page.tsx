@@ -43,7 +43,7 @@ export default function Cart() {
               {products.map((item) => (
                 <div key={item.id} className="bg-gray-50 p-6 rounded-lg shadow-md">
                   <div className="relative w-full  mb-4 flex items-center justify-center overflow-hidden rounded-md">
-                    <StaticProductPreview product={item.product} />
+                    {item.product.image?.url && <StaticProductPreview product={item.product} />}
                   </div>
                   <h3 className="text-2xl font-semibold mb-2 text-gray-800">
                     {item.product.category} - {item.product.subcategory}

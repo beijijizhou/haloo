@@ -4,7 +4,6 @@ export const removeBackground = async (imageUrl: string | null): Promise<string 
     return null;
   }
 
-  console.log('removeBackground: Starting background removal for', imageUrl);
   try {
     const img = new window.Image();
     img.crossOrigin = 'Anonymous';
@@ -12,7 +11,6 @@ export const removeBackground = async (imageUrl: string | null): Promise<string 
 
     await new Promise((resolve, reject) => {
       img.onload = () => {
-        console.log('removeBackground: Image loaded successfully');
         resolve("Image loaded");
       };
       img.onerror = () => {
@@ -46,7 +44,6 @@ export const removeBackground = async (imageUrl: string | null): Promise<string 
 
     ctx.putImageData(imageData, 0, 0);
     const processedBase64 = canvas.toDataURL('image/png');
-    console.log('removeBackground: Processed image, returning:', processedBase64.slice(0, 30) + '...');
     return processedBase64;
   } catch (error) {
     console.error('removeBackground: Failed to remove background:', error);

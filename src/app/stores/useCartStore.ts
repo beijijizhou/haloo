@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { get, set as setIDB, del, clear, values } from 'idb-keyval';
 import { Product } from '@/app/types/product';
+import { findMatchingProduct } from '../utils/findMatchingProduct';
 
 interface CartItem {
   id: string;
@@ -17,48 +18,41 @@ interface CartState {
   clearCart: () => Promise<void>;
 }
 
+
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       products: [],
-      addProduct: async (product) => {
-        const id = `${product.category}-${product.subcategory}-${product.sizeOrModel}-${product.material}-${Date.now()}`;
-        const existingProduct = get().products.find(
-          (item) =>
-            item.product.category === product.category &&
-            item.product.subcategory === product.subcategory &&
-            item.product.sizeOrModel === product.sizeOrModel &&
-            item.product.material === product.material &&
-            item.product.color === product.color &&
-            item.product.image.url === product.image.url
-        );
+      addProduct: async (newProduct) => {
+        const id = `${newProduct.category}-${newProduct.subcategory}-${newProduct.sizeOrModel}-${newProduct.material}-${Date.now()}`;
+        const existingProduct = findMatchingProduct(get().products, newProduct);
         if (existingProduct) {
           set((state) => ({
             products: state.products.map((item) =>
               item.id === existingProduct.id
                 ? {
-                  ...item,
-                  product: {
-                    ...item.product,
-                    quantity: item.product.quantity + (product.quantity || 1),
-                  },
-                }
+                    ...item,
+                    product: {
+                      ...item.product,
+                      quantity: item.product.quantity + 1,
+                    },
+                  }
                 : item
             ),
           }));
         } else {
           try {
-            await setIDB(`cart-item-image-${id}`, product.image.url || '');
-            console.log(`Saved imageUrl for cart item ${id}:`, product.image.url ? 'Present' : 'Empty');
+            await setIDB(`cart-item-image-${id}`, newProduct.image.url || '');
+            console.log(`Saved imageUrl for cart item ${id}:`, newProduct.image.url ? 'Present' : 'Empty');
             set((state) => ({
               products: [
                 ...state.products,
                 {
                   id,
                   product: {
-                    ...product,
-                    color: product.category === 'Phone Cases' ? '' : product.color,
-                    quantity: product.quantity || 1,
+                    ...newProduct,
+                    color: newProduct.category === 'Phone Cases' ? '' : newProduct.color,
+                    quantity: newProduct.quantity || 1,
                   },
                 },
               ],
@@ -87,9 +81,9 @@ export const useCartStore = create<CartState>()(
             .map((item) =>
               item.id === id
                 ? {
-                  ...item,
-                  product: { ...item.product, quantity: Math.max(1, item.product.quantity - 1) },
-                }
+                    ...item,
+                    product: { ...item.product, quantity: Math.max(1, item.product.quantity - 1) },
+                  }
                 : item
             )
             .filter((item) => item.product.quantity > 0),
