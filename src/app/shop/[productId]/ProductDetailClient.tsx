@@ -4,7 +4,7 @@
 import Image from 'next/image';
 import { useState } from 'react'; // Keep useEffect for potential future use, though not strictly needed for this specific change
 import { useRouter } from 'next/navigation';
-import { PRODUCT_SIZES } from '../../../../lib/constants';
+import { PRODUCT_SIZES } from '../../lib/constants';
 
 // Define the type for product data passed as props
 interface ProductDetailClientProps {

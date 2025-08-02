@@ -6,7 +6,6 @@ import { useProductSelector } from '../hooks/useProductSelector';
 import { useCartStore } from '../stores/useCartStore';
 import { useProductStore } from '../stores/useProductStore';
 import { useRouter } from 'next/navigation';
-import { image } from 'framer-motion/client';
 
 export default function CreatePage() {
   const {

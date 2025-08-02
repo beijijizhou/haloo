@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect, Suspense } from 'react';
-import { mockProducts } from '../../../lib/constants/product';
+import { mockProducts } from '../lib/constants/product';
 
 // Define a type for the models object
 interface Models {

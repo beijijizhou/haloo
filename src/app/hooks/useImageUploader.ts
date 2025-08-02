@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useProductStore } from '../stores/useProductStore';
+import { removeBackground } from '../utils/removeBackground';
+
 
 type UseImageUploaderReturn = {
   error: string | null;
@@ -10,7 +12,7 @@ type UseImageUploaderReturn = {
 export const useImageUploader = (): UseImageUploaderReturn => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const { product, setProductSelection } = useProductStore();
+  const { product, setImage } = useProductStore();
 
   useEffect(() => {
     return () => {
@@ -26,13 +28,13 @@ export const useImageUploader = (): UseImageUploaderReturn => {
     setSuccess(null);
 
     if (!file) {
-      setProductSelection({ image: { ...product.image, url: null } });
+      setImage({ url: null, processedUrl: null });
       return;
     }
 
     if (file.type !== 'image/png') {
       setError('Only PNG files are allowed!');
-      setProductSelection({ image: { ...product.image, url: null } });
+      setImage({ url: null, processedUrl: null });
       return;
     }
 
@@ -44,12 +46,15 @@ export const useImageUploader = (): UseImageUploaderReturn => {
         reader.readAsDataURL(file);
       });
       const base64 = await base64Promise;
+      const processedUrl = await removeBackground(base64);
 
-      setSuccess('PNG file selected successfully!');
-      setProductSelection({ image: { ...product.image, url: base64 } });
+      setImage({ url: base64, processedUrl });
+
+      setSuccess('PNG file selected and processed successfully!');
     } catch (error) {
       setError('Failed to process image');
       console.error('Error:', error);
+      setImage({ url: null, processedUrl: null });
     }
   };
 

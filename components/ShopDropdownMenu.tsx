@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { categories } from '../lib/constants/category';
+import { categories } from '../src/app/lib/constants/category';
 
 interface DropdownMenuProps {
   isOpen: boolean;

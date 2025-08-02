@@ -6,8 +6,8 @@ import { Product, Image } from '../types';
 type ProductStore = {
   product: Product;
   setProductSelection: (product: Partial<Product>) => void;
-  setUseProcessedImageUrl: (useProcessed: boolean) => void;
-  setProcessedImageUrl: (processedImageUrl: string | null) => void;
+  setUseProcessedUrl: (useProcessed: boolean) => void;
+  setImage: (image: Partial<Image>) => void;
 };
 
 export const useProductStore = create<ProductStore>()(
@@ -33,30 +33,23 @@ export const useProductStore = create<ProductStore>()(
           product: {
             ...state.product,
             ...newProduct,
-            image: {
-              ...state.product.image,
-              ...(newProduct.image || {}),
-              useProcessedUrl:
-                newProduct.image?.url !== undefined
-                  ? true
-                  : state.product.image.useProcessedUrl,
-              processedUrl:
-                newProduct.image?.url !== undefined ? null : state.product.image.processedUrl,
-            },
           },
         })),
-      setUseProcessedImageUrl: (useProcessed) =>
+      setUseProcessedUrl: (useProcessed) =>
         set((state) => ({
           product: {
             ...state.product,
             image: { ...state.product.image, useProcessedUrl: useProcessed },
           },
         })),
-      setProcessedImageUrl: (processedImageUrl) =>
+      setImage: (image) =>
         set((state) => ({
           product: {
             ...state.product,
-            image: { ...state.product.image, processedUrl: processedImageUrl },
+            image: {
+              ...state.product.image,
+              ...image,
+            },
           },
         })),
     }),

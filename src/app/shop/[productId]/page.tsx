@@ -2,7 +2,7 @@
 // NO 'use client' HERE - This is a Server Component
 import { notFound } from 'next/navigation';
 import ProductDetailClient from './ProductDetailClient'; // Import your new Client Component
-import { mockProducts } from '../../../../lib/constants/product';
+import { mockProducts } from '../../lib/constants/product';
 // import { mockProducts } from '../../../../lib/constants';
 
 // This function tells Next.js which static paths to generate at build time
