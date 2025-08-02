@@ -6,7 +6,6 @@ import CustomOrderForm from '../../../components/CustomOrderForm';
 import { useProductSelector } from '../hooks/useProductSelector';
 import { useCartStore } from '../stores/useCartStore';
 import { useProductStore } from '../stores/useProductStore';
-import { Product } from '../types';
 
 export default function CreatePage() {
   const {
@@ -15,9 +14,8 @@ export default function CreatePage() {
     selectedSizeOrModel,
     selectedColor,
     selectedMaterial,
-    selectedPrice,
   } = useProductSelector();
-  const { product, setProductSelection } = useProductStore();
+  const { product} = useProductStore();
   const { addProduct } = useCartStore();
   const [showNotification, setShowNotification] = useState(false);
 
@@ -46,11 +44,9 @@ export default function CreatePage() {
 
     return true; // Default case (should not occur with valid categories)
   };
-  console.log(product)
   const handleAddToCart = () => {
     // setProductSelection(newProduct);
     addProduct(product);
-    
     setShowNotification(true);
     setTimeout(() => setShowNotification(false), 3000); // Hide after 3 seconds
   };

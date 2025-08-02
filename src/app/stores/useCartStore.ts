@@ -1,3 +1,5 @@
+'use client';
+
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { get, set as setIDB, del, clear, values } from 'idb-keyval';
@@ -17,7 +19,6 @@ interface CartState {
   removeProduct: (id: string) => Promise<void>;
   clearCart: () => Promise<void>;
 }
-
 
 export const useCartStore = create<CartState>()(
   persist(
@@ -101,9 +102,8 @@ export const useCartStore = create<CartState>()(
       },
       clearCart: async () => {
         try {
-          clear();
-          values().then((v) => console.log('Cleared IndexedDB entries:', v));
-          localStorage.removeItem('cart-data');
+          await clear();
+          console.log('Cleared all IndexedDB entries');
           set({ products: [] });
         } catch (error) {
           console.error('Failed to clear cart IndexedDB entries:', error);
@@ -123,13 +123,18 @@ export const useCartStore = create<CartState>()(
             material: item.product.material,
             quantity: item.product.quantity,
             price: item.product.price,
+            image: {
+              url: item.product.image.url,
+              processedUrl: item.product.image.processedUrl,
+              useProcessedUrl: item.product.image.useProcessedUrl,
+            },
           },
         })),
       }),
       storage: {
         getItem: async (name) => {
           try {
-            const value = localStorage.getItem(name);
+            const value = await get(name);
             let parsed = value ? JSON.parse(value) : { products: [] };
             // Handle nested state objects
             while (parsed.state && parsed.state.products) {
@@ -140,32 +145,43 @@ export const useCartStore = create<CartState>()(
               products.map(async (item: CartItem) => {
                 try {
                   const imageUrl = await get(`cart-item-image-${item.id}`);
-                  // console.log(`Loaded imageUrl for cart item ${item.id}:`, imageUrl ? 'Present' : 'Empty');
+                  console.log(`Loaded imageUrl for cart item ${item.id}:`, imageUrl ? 'Present' : 'Empty');
                   return {
                     ...item,
-                    product: { ...item.product, imageUrl: imageUrl || '' },
+                    product: { ...item.product, image: { ...item.product.image, url: imageUrl || '' } },
                   };
                 } catch (error) {
                   console.error(`Failed to load imageUrl for cart item ${item.id}:`, error);
                   return {
                     ...item,
-                    product: { ...item.product, imageUrl: '' },
+                    product: { ...item.product, image: { ...item.product.image, url: '' } },
                   };
                 }
               })
             );
-            // console.log('Loaded cart from localStorage:', { products: productsWithImages });
+            console.log('Loaded cart from IndexedDB:', { products: productsWithImages });
             return { state: { products: productsWithImages } };
           } catch (error) {
-            console.error('Failed to load cart from localStorage or IndexedDB:', error);
+            console.error('Failed to load cart from IndexedDB:', error);
             return { state: { products: [] } };
           }
         },
-        setItem: (name, value) => {
-          console.log('Saving cart to localStorage:', value);
-          localStorage.setItem(name, JSON.stringify(value));
+        setItem: async (name, value) => {
+          try {
+            await setIDB(name, JSON.stringify(value));
+            console.log('Saved cart to IndexedDB:', value);
+          } catch (error) {
+            console.error('Failed to save cart to IndexedDB:', error);
+          }
         },
-        removeItem: (name) => localStorage.removeItem(name),
+        removeItem: async (name) => {
+          try {
+            await del(name);
+            console.log('Removed cart from IndexedDB:', name);
+          } catch (error) {
+            console.error('Failed to remove cart from IndexedDB:', error);
+          }
+        },
       },
     }
   )
