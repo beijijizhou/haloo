@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCartStore } from '@/app/stores/useCartStore';
+import StaticProductPreview from '../../../components/StaticProductPreview';
 
 export default function Cart() {
   const { products, increaseQuantity, decreaseQuantity, removeProduct, clearCart } = useCartStore();
@@ -41,14 +42,8 @@ export default function Cart() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
               {products.map((item) => (
                 <div key={item.id} className="bg-gray-50 p-6 rounded-lg shadow-md">
-                  <div className="relative w-full h-48 mb-4 flex items-center justify-center overflow-hidden rounded-md">
-                    <Image
-                      src={item.product.image.url || '/images/placeholder.png'}
-                      alt={`${item.product.category} - ${item.product.subcategory}`}
-                      width={150}
-                      height={150}
-                      className="object-contain"
-                    />
+                  <div className="relative w-full  mb-4 flex items-center justify-center overflow-hidden rounded-md">
+                    <StaticProductPreview product={item.product} />
                   </div>
                   <h3 className="text-2xl font-semibold mb-2 text-gray-800">
                     {item.product.category} - {item.product.subcategory}

@@ -1,7 +1,7 @@
 'use client';
 import { useRef, useState } from 'react';
-import Image from 'next/image';
 import { useCartStore } from '@/app/stores/useCartStore';
+import StaticProductPreview from './StaticProductPreview';
 
 export default function ProductReview() {
   const { products } = useCartStore();
@@ -70,13 +70,9 @@ export default function ProductReview() {
                 key={id}
                 className="flex-shrink-0 w-64 bg-white border rounded-lg p-4 shadow-sm"
               >
-                <Image
-                  src={product.image.url!}
-                  alt={`${product.category} ${product.subcategory}`}
-                  width={64}
-                  height={64}
-                  className="object-cover rounded mb-2"
-                />
+
+                <StaticProductPreview product={product} />
+
                 <h3 className="text-lg font-medium text-gray-800">
                   {product.category} {product.subcategory}
                 </h3>
