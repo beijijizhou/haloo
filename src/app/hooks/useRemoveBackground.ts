@@ -1,12 +1,12 @@
-import { useEffect } from 'react';
 import { useProductStore } from '@/app/stores/useProductStore';
+import { useEffect } from 'react';
 
 export const useRemoveBackground = (imageUrl: string | null) => {
-  const { setProcessedImage } = useProductStore();
+  const { setProcessedImageUrl } = useProductStore();
 
   useEffect(() => {
     if (!imageUrl) {
-      setProcessedImage(null);
+      setProcessedImageUrl(null);
       return;
     }
 
@@ -31,7 +31,6 @@ export const useRemoveBackground = (imageUrl: string | null) => {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imageData.data;
 
-        // Remove near-white background (R,G,B > 200)
         for (let i = 0; i < data.length; i += 4) {
           const r = data[i];
           const g = data[i + 1];
@@ -43,13 +42,13 @@ export const useRemoveBackground = (imageUrl: string | null) => {
 
         ctx.putImageData(imageData, 0, 0);
         const processedBase64 = canvas.toDataURL('image/png');
-        setProcessedImage(processedBase64);
+        setProcessedImageUrl(processedBase64);
       } catch (error) {
         console.error('Failed to remove background:', error);
-        setProcessedImage(url); // Fallback to original image
+        setProcessedImageUrl(url); // Fallback to original image
       }
     };
 
     removeBackground(imageUrl);
-  }, [imageUrl, setProcessedImage]);
+  }, [imageUrl, setProcessedImageUrl]);
 };

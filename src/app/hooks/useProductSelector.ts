@@ -98,11 +98,16 @@ export function useProductSelector(): UseProductSelectorReturn {
       sizeOrModel: newSizeOrModel,
       color: newColor,
       material: newMaterial,
-      imageUrl: product.imageUrl,
+      image: {
+        url: product.image.url,
+        processedUrl: product.image.processedUrl,
+        useProcessedUrl: product.image.useProcessedUrl,
+      },
+      id: product.id, // Ensure product has an ID
       quantity: 1,
       price: newPrice,
     });
-  }, [selectedCategory, selectedSubcategory, selectedSizeOrModel, selectedColor, selectedMaterial, product.imageUrl, setProductSelection, getPrice, getDefaultSubcategory, getDefaultSizeOrModel, selectedPrice]);
+  }, [selectedCategory, selectedSubcategory, selectedSizeOrModel, selectedColor, selectedMaterial, setProductSelection, getPrice, getDefaultSubcategory, getDefaultSizeOrModel, selectedPrice, product.image.url, product.image.processedUrl, product.image.useProcessedUrl, product.id]);
 
   const handleCategoryChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategory(event.target.value);

@@ -1,9 +1,7 @@
 'use client';
 
 import { useProductSelector } from '@/app/hooks/useProductSelector';
-import { useProductStore } from '@/app/stores/useProductStore';
-import { useCartStore } from '@/app/stores/useCartStore';
-import { useRouter } from 'next/navigation';
+
 
 export default function ProductSelector() {
   const {

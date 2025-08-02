@@ -43,7 +43,7 @@ export default function Cart() {
                 <div key={item.id} className="bg-gray-50 p-6 rounded-lg shadow-md">
                   <div className="relative w-full h-48 mb-4 flex items-center justify-center overflow-hidden rounded-md">
                     <Image
-                      src={item.product.imageUrl || '/images/placeholder.png'}
+                      src={item.product.image.url || '/images/placeholder.png'}
                       alt={`${item.product.category} - ${item.product.subcategory}`}
                       width={150}
                       height={150}

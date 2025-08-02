@@ -1,21 +1,13 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { get, set } from 'idb-keyval';
-
-export type Product = {
-  id: string;
-  imageUrl: string;
-  color: string;
-  size: string;
-  useProcessedImage: boolean;
-  processedImage: string | null;
-};
+import { Product, Image } from '../types';
 
 type ProductStore = {
   product: Product;
   setProductSelection: (product: Partial<Product>) => void;
-  setUseProcessedImage: (useProcessed: boolean) => void;
-  setProcessedImage: (processedImage: string | null) => void;
+  setUseProcessedImageUrl: (useProcessed: boolean) => void;
+  setProcessedImageUrl: (processedImageUrl: string | null) => void;
 };
 
 export const useProductStore = create<ProductStore>()(
@@ -23,28 +15,49 @@ export const useProductStore = create<ProductStore>()(
     (set) => ({
       product: {
         id: '',
-        imageUrl: '',
+        category: '',
+        subcategory: '',
+        sizeOrModel: '',
         color: '',
-        size: '',
-        useProcessedImage: true,
-        processedImage: null,
+        material: '',
+        quantity: 1,
+        price: 0,
+        image: {
+          url: null,
+          processedUrl: null,
+          useProcessedUrl: true,
+        },
       },
       setProductSelection: (newProduct) =>
         set((state) => ({
           product: {
             ...state.product,
             ...newProduct,
-            useProcessedImage: newProduct.imageUrl !== undefined ? true : state.product.useProcessedImage,
-            processedImage: newProduct.imageUrl !== undefined ? null : state.product.processedImage,
+            image: {
+              ...state.product.image,
+              ...(newProduct.image || {}),
+              useProcessedUrl:
+                newProduct.image?.url !== undefined
+                  ? true
+                  : state.product.image.useProcessedUrl,
+              processedUrl:
+                newProduct.image?.url !== undefined ? null : state.product.image.processedUrl,
+            },
           },
         })),
-      setUseProcessedImage: (useProcessed) =>
+      setUseProcessedImageUrl: (useProcessed) =>
         set((state) => ({
-          product: { ...state.product, useProcessedImage: useProcessed },
+          product: {
+            ...state.product,
+            image: { ...state.product.image, useProcessedUrl: useProcessed },
+          },
         })),
-      setProcessedImage: (processedImage) =>
+      setProcessedImageUrl: (processedImageUrl) =>
         set((state) => ({
-          product: { ...state.product, processedImage },
+          product: {
+            ...state.product,
+            image: { ...state.product.image, processedUrl: processedImageUrl },
+          },
         })),
     }),
     {

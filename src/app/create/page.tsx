@@ -6,6 +6,7 @@ import { useProductSelector } from '../hooks/useProductSelector';
 import { useCartStore } from '../stores/useCartStore';
 import { useProductStore } from '../stores/useProductStore';
 import { useRouter } from 'next/navigation';
+import { image } from 'framer-motion/client';
 
 export default function CreatePage() {
   const {
@@ -25,7 +26,7 @@ export default function CreatePage() {
     const sharedValid = Boolean(
       selectedCategory &&
       selectedSubcategory &&
-      product.imageUrl
+      product.image.url
 
     );
 
@@ -54,7 +55,12 @@ export default function CreatePage() {
       sizeOrModel: selectedSizeOrModel,
       color: selectedCategory === 'Phone Cases' ? '' : selectedColor,
       material: selectedMaterial,
-      imageUrl: product.imageUrl,
+      image: {
+        url: product.image.url,
+        processedUrl: product.image.processedUrl,
+        useProcessedUrl: product.image.useProcessedUrl,
+      },
+      id: product.id, // Ensure product has an ID
       quantity: 1,
       price: selectedPrice,
     };

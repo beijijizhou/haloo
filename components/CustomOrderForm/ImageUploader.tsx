@@ -1,53 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useProductStore } from '@/app/stores/useProductStore';
+import { useImageUploader } from '@/app/hooks/useImageUploader';
 
 export default function ImageUploader() {
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const { product, setProductSelection } = useProductStore();
-
-  useEffect(() => {
-    return () => {
-      if (product.imageUrl) URL.revokeObjectURL(product.imageUrl);
-    };
-  }, [product.imageUrl]);
-
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    setError(null);
-    setSuccess(null);
-
-    if (!file) {
-      setProductSelection({ ...product, imageUrl: '' });
-      return;
-    }
-
-    if (file.type !== 'image/png') {
-      setError('Only PNG files are allowed!');
-      setProductSelection({ ...product, imageUrl: '' });
-      return;
-    }
-
-    try {
-      // Convert file to Base64
-      const reader = new FileReader();
-      const base64Promise = new Promise<string>((resolve, reject) => {
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = () => reject(new Error('Failed to read file'));
-        reader.readAsDataURL(file);
-      });
-      const base64 = await base64Promise;
-
-      setSuccess('PNG file selected successfully!');
-      setProductSelection({ ...product, imageUrl: base64 });
-    } catch (error) {
-      setError('Failed to process image');
-      console.error('Error:', error);
-    }
-  };
+  const { product } = useProductStore();
+  const { error, success, handleFileChange } = useImageUploader();
 
   return (
     <div className="space-y-4">
@@ -79,12 +38,12 @@ export default function ImageUploader() {
         </p>
       )}
 
-      {product.imageUrl && (
+      {product.image.url && (
         <div className="mt-4">
           <h3 className="text-lg font-medium text-gray-700">Preview:</h3>
           <div className="relative w-full h-64 bg-gray-100 rounded-md overflow-hidden">
             <Image
-              src={product.imageUrl}
+              src={product.image.url}
               alt="Uploaded PNG preview"
               fill
               style={{ objectFit: 'contain' }}

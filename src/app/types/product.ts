@@ -1,13 +1,17 @@
-/**
- * Represents product details for an order.
- */
+export interface Image {
+  url: string | null; // Original Base64 image
+  processedUrl: string | null; // Background-removed Base64 image
+  useProcessedUrl: boolean; // Toggle processed vs. original
+}
+
 export interface Product {
+  id: string;
   category: string;
   subcategory: string;
   sizeOrModel: string;
-  color: string; // Empty string for Phone Cases
+  color: string;
   material: string;
-  imageUrl: string; // Base64 image string or URL
-  quantity: number; // Quantity of the product
-  price: number; // Unit price in dollars
+  quantity: number;
+  price: number;
+  image: Image;
 }

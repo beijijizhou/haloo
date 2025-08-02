@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { get, set as setIDB, del,clear, values } from 'idb-keyval';
+import { get, set as setIDB, del, clear, values } from 'idb-keyval';
 import { Product } from '@/app/types/product';
 
 interface CartItem {
@@ -30,26 +30,26 @@ export const useCartStore = create<CartState>()(
             item.product.sizeOrModel === product.sizeOrModel &&
             item.product.material === product.material &&
             item.product.color === product.color &&
-            item.product.imageUrl === product.imageUrl
+            item.product.image.url === product.image.url
         );
         if (existingProduct) {
           set((state) => ({
             products: state.products.map((item) =>
               item.id === existingProduct.id
                 ? {
-                    ...item,
-                    product: {
-                      ...item.product,
-                      quantity: item.product.quantity + (product.quantity || 1),
-                    },
-                  }
+                  ...item,
+                  product: {
+                    ...item.product,
+                    quantity: item.product.quantity + (product.quantity || 1),
+                  },
+                }
                 : item
             ),
           }));
         } else {
           try {
-            await setIDB(`cart-item-image-${id}`, product.imageUrl || '');
-            console.log(`Saved imageUrl for cart item ${id}:`, product.imageUrl ? 'Present' : 'Empty');
+            await setIDB(`cart-item-image-${id}`, product.image.url || '');
+            console.log(`Saved imageUrl for cart item ${id}:`, product.image.url ? 'Present' : 'Empty');
             set((state) => ({
               products: [
                 ...state.products,
@@ -87,9 +87,9 @@ export const useCartStore = create<CartState>()(
             .map((item) =>
               item.id === id
                 ? {
-                    ...item,
-                    product: { ...item.product, quantity: Math.max(1, item.product.quantity - 1) },
-                  }
+                  ...item,
+                  product: { ...item.product, quantity: Math.max(1, item.product.quantity - 1) },
+                }
                 : item
             )
             .filter((item) => item.product.quantity > 0),
@@ -108,7 +108,7 @@ export const useCartStore = create<CartState>()(
       clearCart: async () => {
         try {
           clear();
-          values().then((v)=>console.log('Cleared IndexedDB entries:', v));
+          values().then((v) => console.log('Cleared IndexedDB entries:', v));
           localStorage.removeItem('cart-data');
           set({ products: [] });
         } catch (error) {

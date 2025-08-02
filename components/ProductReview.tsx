@@ -71,7 +71,7 @@ export default function ProductReview() {
                 className="flex-shrink-0 w-64 bg-white border rounded-lg p-4 shadow-sm"
               >
                 <Image
-                  src={product.imageUrl}
+                  src={product.image.url!}
                   alt={`${product.category} ${product.subcategory}`}
                   width={64}
                   height={64}
