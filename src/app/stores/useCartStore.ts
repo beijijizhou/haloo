@@ -14,8 +14,8 @@ interface CartItem {
 interface CartState {
   products: CartItem[];
   addProduct: (product: Product) => void;
-  increaseQuantity: (id: string) => void;
-  decreaseQuantity: (id: string) => void;
+  setQuantity: (id: string, quantity: number) => void;
+
   removeProduct: (id: string) => Promise<void>;
   clearCart: () => Promise<void>;
 }
@@ -32,12 +32,12 @@ export const useCartStore = create<CartState>()(
             products: state.products.map((item) =>
               item.id === existingProduct.id
                 ? {
-                    ...item,
-                    product: {
-                      ...item.product,
-                      quantity: item.product.quantity + 1,
-                    },
-                  }
+                  ...item,
+                  product: {
+                    ...item.product,
+                    quantity: item.product.quantity + 1,
+                  },
+                }
                 : item
             ),
           }));
@@ -68,23 +68,15 @@ export const useCartStore = create<CartState>()(
           }
         }
       },
-      increaseQuantity: (id) =>
-        set((state) => ({
-          products: state.products.map((item) =>
-            item.id === id
-              ? { ...item, product: { ...item.product, quantity: item.product.quantity + 1 } }
-              : item
-          ),
-        })),
-      decreaseQuantity: (id) =>
+      setQuantity: (id, quantity) =>
         set((state) => ({
           products: state.products
             .map((item) =>
               item.id === id
                 ? {
-                    ...item,
-                    product: { ...item.product, quantity: Math.max(1, item.product.quantity - 1) },
-                  }
+                  ...item,
+                  product: { ...item.product, quantity: Math.max(1, Math.floor(quantity)) },
+                }
                 : item
             )
             .filter((item) => item.product.quantity > 0),
