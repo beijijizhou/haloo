@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useProductStore } from '@/app/stores/useProductStore';
-import { categories, Category, PRODUCT_SIZES, PHONE_MODELS, COLORS, PHONE_CASE_MATERIALS } from './constants';
 import { ImageState } from '../types';
+import { categories, Category, COLORS, PHONE_CASE_MATERIALS, PHONE_MODELS, PRODUCT_SIZES } from '../lib/constants/category';
 
 interface UseProductSelectorReturn {
   selectedCategory: string;
