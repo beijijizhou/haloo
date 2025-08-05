@@ -10,6 +10,6 @@ export function findMatchingProduct(products: CartItem[], product: Product): Car
       item.product.color === product.color &&
       item.product.image.url === product.image.url &&
       item.product.image.processedUrl === product.image.processedUrl &&
-      item.product.image.useProcessedUrl === product.image.useProcessedUrl
+      item.product.image.imageState === product.image.imageState
   );
 }

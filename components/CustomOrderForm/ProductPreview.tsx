@@ -20,7 +20,7 @@ export default function ProductPreview() {
 
   const getImageUrl = () => {
     switch (localImageState) {
-      case ImageState.HighQuality:
+      case ImageState.AI:
         return highQualityProcessedUrl || processedUrl || url;
       case ImageState.Processed:
         return processedUrl || url;
@@ -33,7 +33,7 @@ export default function ProductPreview() {
   const isOptionDisabled = (mode: ImageState) => {
     if (mode === ImageState.Original) return false;
     if (mode === ImageState.Processed) return !processedUrl;
-    if (mode === ImageState.HighQuality) return !highQualityProcessedUrl;
+    if (mode === ImageState.AI) return !highQualityProcessedUrl;
     return true;
   };
 
@@ -56,11 +56,11 @@ export default function ProductPreview() {
               image: { ...image, url: getImageUrl() },
             }}
           />
-          {localImageState !== ImageState.HighQuality && highQualityProcessedUrl === null && (
+          {/* {localImageState !== ImageState.AI && highQualityProcessedUrl === null && (
             <div className="absolute top-2 right-2 bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">
               Processing High-Quality Image...
             </div>
-          )}
+          )} */}
         </div>
       )}
       {url && (
@@ -86,9 +86,8 @@ export default function ProductPreview() {
                     <div
                       key={mode}
                       onClick={() => handleModeChange(mode)}
-                      className={`px-4 py-2 text-sm text-black bg-white font-semibold hover:bg-orange-200 transition-colors duration-200 ${
-                        isOptionDisabled(mode) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                      }`}
+                      className={`px-4 py-2 text-sm text-black bg-white font-semibold hover:bg-orange-200 transition-colors duration-200 ${isOptionDisabled(mode) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                        }`}
                     >
                       {mode}
                     </div>

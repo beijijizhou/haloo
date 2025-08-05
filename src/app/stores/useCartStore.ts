@@ -107,20 +107,7 @@ export const useCartStore = create<CartState>()(
       partialize: (state) => ({
         products: state.products.map((item) => ({
           id: item.id,
-          product: {
-            category: item.product.category,
-            subcategory: item.product.subcategory,
-            sizeOrModel: item.product.sizeOrModel,
-            color: item.product.color,
-            material: item.product.material,
-            quantity: item.product.quantity,
-            price: item.product.price,
-            image: {
-              url: item.product.image.url,
-              processedUrl: item.product.image.processedUrl,
-              useProcessedUrl: item.product.image.useProcessedUrl,
-            },
-          },
+          product:item.product
         })),
       }),
       storage: {

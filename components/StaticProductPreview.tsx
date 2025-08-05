@@ -2,13 +2,15 @@
 
 import Image from 'next/image';
 import { colorMap } from '@/app/lib/constants/tshirtColor';
-import { Product } from '@/app/types';
+import { ImageState, Product } from '@/app/types';
 
 export default function StaticProductPreview({ product }: { product: Product }) {
   const { image } = product;
-  const { url, processedUrl, useProcessedUrl } = image;
-  // console.log('StaticProductPreview: processedUrl:', processedUrl);
+  const { url, processedUrl, highQualityProcessedUrl, imageState } = image;
+  console.log('StaticProductPreview: image data:', { url, processedUrl, highQualityProcessedUrl, imageState });
+  
   const tshirtColor = colorMap[product.color] || colorMap.default;
+
   return (
     <div className="relative w-full h-64 bg-gray-100 rounded-md overflow-hidden">
       <Image
@@ -26,18 +28,18 @@ export default function StaticProductPreview({ product }: { product: Product }) 
           Your Design Here
         </div>
       )}
-      {url && !processedUrl && (
+      {/* {url && imageState === ImageState.Processed && !processedUrl && (
         <div
           className="absolute top-[48%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-700 text-base font-bold text-center bg-gray-200/50 border-2 border-dashed border-gray-400 rounded"
           style={{ width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
           Processing Image...
         </div>
-      )}
-      {url && processedUrl && (
+      )} */}
+      {url && (imageState === ImageState.Original || (imageState === ImageState.Processed && processedUrl)) && (
         <Image
-          key={useProcessedUrl ? processedUrl : url}
-          src={useProcessedUrl ? processedUrl : url}
+          key={image.url}
+          src={image.url!}
           alt="Uploaded design on T-shirt"
           width={64}
           height={64}
