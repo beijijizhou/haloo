@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useProductStore } from '../stores/useProductStore';
 import { removeBackground } from '../utils/removeBackground';
+import { highQualityRemove } from '../utils/test';
+
 
 
 type UseImageUploaderReturn = {
@@ -47,7 +49,8 @@ export const useImageUploader = (): UseImageUploaderReturn => {
       });
       const base64 = await base64Promise;
       const processedUrl = await removeBackground(base64);
-
+      //  const result = highQualityRemove(base64);
+      // console.log(result)
       setImage({ url: base64, processedUrl });
 
       setSuccess('PNG file selected and processed successfully!');

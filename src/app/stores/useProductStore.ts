@@ -1,3 +1,4 @@
+import { ImageState } from './../types/product';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { get, set } from 'idb-keyval';
@@ -6,7 +7,7 @@ import { Product, Image } from '../types';
 type ProductStore = {
   product: Product;
   setProductSelection: (product: Partial<Product>) => void;
-  setUseProcessedUrl: (useProcessed: boolean) => void;
+  setFinalImageState: (displayMode: ImageState) => void;
   setImage: (image: Partial<Image>) => void;
 };
 
@@ -25,7 +26,8 @@ export const useProductStore = create<ProductStore>()(
         image: {
           url: null,
           processedUrl: null,
-          useProcessedUrl: true,
+          highQualityProcessedUrl: null,
+          imageState: ImageState.Processed
         },
       },
       setProductSelection: (newProduct) =>
@@ -35,11 +37,14 @@ export const useProductStore = create<ProductStore>()(
             ...newProduct,
           },
         })),
-      setUseProcessedUrl: (useProcessed) =>
+      setFinalImageState: (displayMode) =>
         set((state) => ({
           product: {
             ...state.product,
-            image: { ...state.product.image, useProcessedUrl: useProcessed },
+            image: {
+              ...state.product.image,
+              imageState: displayMode,
+            },
           },
         })),
       setImage: (image) =>

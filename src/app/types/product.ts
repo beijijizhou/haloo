@@ -1,7 +1,14 @@
+export enum ImageState {
+  Original = 'Original',
+  Processed = 'Processed',
+  HighQuality = 'High Quality',
+}
+
 export interface Image {
-  url: string | null; // Original Base64 image
-  processedUrl: string | null; // Background-removed Base64 image
-  useProcessedUrl: boolean; // Toggle processed vs. original
+  url: string | null; // Original Base64 image or URL
+  processedUrl: string | null; // Regular background-removed Base64 image
+  highQualityProcessedUrl: string | null; // High-quality background-removed Base64 image
+  imageState: ImageState; // Controls which image to display
 }
 
 export interface Product {

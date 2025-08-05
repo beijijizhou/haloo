@@ -1,3 +1,4 @@
+
 export const removeBackground = async (imageUrl: string | null): Promise<string | null> => {
   if (!imageUrl) {
     console.log('removeBackground: No URL provided, returning null');

@@ -45,7 +45,6 @@ export default function CreatePage() {
     return true; // Default case (should not occur with valid categories)
   };
   const handleAddToCart = () => {
-    // setProductSelection(newProduct);
     addProduct(product);
     setShowNotification(true);
     setTimeout(() => setShowNotification(false), 3000); // Hide after 3 seconds

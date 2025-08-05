@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useProductStore } from '@/app/stores/useProductStore';
 import { categories, Category, PRODUCT_SIZES, PHONE_MODELS, COLORS, PHONE_CASE_MATERIALS } from './constants';
+import { ImageState } from '../types';
 
 interface UseProductSelectorReturn {
   selectedCategory: string;
@@ -25,7 +26,7 @@ interface UseProductSelectorReturn {
 
 export function useProductSelector(): UseProductSelectorReturn {
   const { product, setProductSelection } = useProductStore();
-  const { category, subcategory, sizeOrModel, color, material,  price } = product;
+  const { category, subcategory, sizeOrModel, color, material, price } = product;
 
   const [selectedCategory, setSelectedCategory] = useState<string>(category || 'Clothing');
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>(subcategory || '');
@@ -100,13 +101,14 @@ export function useProductSelector(): UseProductSelectorReturn {
       image: {
         url: product.image.url,
         processedUrl: product.image.processedUrl,
-        useProcessedUrl: product.image.useProcessedUrl,
+        imageState: ImageState.Processed,
+        highQualityProcessedUrl: null,
       },
       id: product.id, // Ensure product has an ID
       quantity: 1,
       price: newPrice,
     });
-  }, [selectedCategory, selectedSubcategory, selectedSizeOrModel, selectedColor, selectedMaterial, setProductSelection, getPrice, getDefaultSubcategory, getDefaultSizeOrModel, selectedPrice, product.image.url, product.image.processedUrl, product.image.useProcessedUrl, product.id]);
+  }, [selectedCategory, selectedSubcategory, selectedSizeOrModel, selectedColor, selectedMaterial, setProductSelection, getPrice, getDefaultSubcategory, getDefaultSizeOrModel, selectedPrice, product.image.url, product.image.processedUrl, product.image.highQualityProcessedUrl, product.id]);
 
   const handleCategoryChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategory(event.target.value);
@@ -140,7 +142,7 @@ export function useProductSelector(): UseProductSelectorReturn {
       : selectedCategory === 'Phone Cases' && selectedSubcategory && selectedSubcategory !== 'Others'
         ? PHONE_MODELS[selectedSubcategory as keyof typeof PHONE_MODELS] || []
         : [];
-  
+
   return {
     selectedCategory,
     selectedSubcategory,
@@ -158,6 +160,6 @@ export function useProductSelector(): UseProductSelectorReturn {
     handleSizeOrModelChange,
     handleColorChange,
     handleMaterialChange,
-   
+
   };
 }
