@@ -1,7 +1,7 @@
 export enum ImageState {
   Original = 'Original',
   Processed = 'Processed',
-  AI = 'High Quality',
+  AI = 'AI Processed',
 }
 
 export interface Image {
