@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useCartStore } from '../stores/useCartStore';
@@ -15,7 +15,8 @@ enum RedirectStatus {
   Unknown = 'unknown',
 }
 
-export default function OrderSuccessPage() {
+// Inner component with useSearchParams
+function OrderSuccessContent() {
   const searchParams = useSearchParams();
   const { clearCart } = useCartStore();
   const [statusMessage, setStatusMessage] = useState<string>('');
@@ -97,5 +98,19 @@ export default function OrderSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function OrderSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex flex-col items-center justify-center py-16 px-4 text-center min-h-[60vh]">
+          <p className="text-lg text-gray-600">Loading order status...</p>
+        </div>
+      }
+    >
+      <OrderSuccessContent />
+    </Suspense>
   );
 }
