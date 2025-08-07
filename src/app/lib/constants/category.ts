@@ -9,17 +9,9 @@ export const categories: Category[] = [
     subcategories: [
       { name: 'Tshirts', href: '/shop?category=clothing&model=Tshirts' },
       { name: 'Hoodies', href: '/shop?category=clothing&model=Hoodies' },
-      { name: 'Sweatshirt', href: '/shop?category=clothing&model=sweatshirt' },
+      // { name: 'Sweatshirt', href: '/shop?category=clothing&model=sweatshirt' },
     ],
   },
-  // {
-  //   name: 'Phone Cases',
-  //   subcategories: [
-  //     { name: 'Apple', href: '/shop?category=phonecase&model=iphone' },
-  //     { name: 'Samsung', href: '/shop?category=phonecase&model=samsung' },
-  //     { name: 'Others', href: '/shop?category=phonecase&model=others' },
-  //   ],
-  // },
 ];
 
 export const PRODUCT_SIZES = ['Small', 'Medium', 'Large', 'XL', '2XL', '3XL', '4XL'];

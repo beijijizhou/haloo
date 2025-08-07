@@ -7,7 +7,7 @@ import { ImageState, Product } from '@/app/types';
 export default function StaticProductPreview({ product }: { product: Product }) {
   const { image } = product;
   const { url, processedUrl, imageState } = image;
-  
+
   const tshirtColor = colorMap[product.color] || colorMap.default;
 
   return (
@@ -35,7 +35,7 @@ export default function StaticProductPreview({ product }: { product: Product }) 
           Processing Image...
         </div>
       )} */}
-      {url && (imageState === ImageState.Original || (imageState === ImageState.Processed && processedUrl)) && (
+      {url && (imageState === ImageState.Original || (imageState === ImageState.BackgroundRemoved && processedUrl)) && (
         <Image
           key={image.url}
           src={image.url!}

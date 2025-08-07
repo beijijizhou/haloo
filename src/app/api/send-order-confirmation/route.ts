@@ -35,10 +35,10 @@ function validateBase64Image(image: string): { isValid: boolean; content: string
 async function sendEmail(payload: ConfirmationEmailPayload) {
   const {
     contactInfo: { fullName, email, phone, street, city, state, zipCode },
-    product: { category = 'N/A', subcategory = 'N/A', size: sizeOrModel = 'N/A', color = 'N/A' },
+    product: { category = 'N/A', subcategory = 'N/A', size = 'N/A', color = 'N/A' },
     order: { price = 0, image = '', quantity = 1, orderId = 'N/A' },
   } = payload;
-  console.log('Sending confirmation email with payload:', payload);
+  console.log('Sending confirmation email with payload:');
   const { isValid, content, mimeType } = validateBase64Image(image);
 
   const attachments = isValid
@@ -50,7 +50,7 @@ async function sendEmail(payload: ConfirmationEmailPayload) {
       },
     ]
     : [];
-
+    return null
   return await resend.emails.send({
     from: process.env.NEXT_PUBLIC_SHOP_EMAIL || 'onboarding@resend.dev',
     to: [email, storeEmail],
@@ -63,7 +63,7 @@ async function sendEmail(payload: ConfirmationEmailPayload) {
       <ul>
         <li>Category: ${category}</li>
         <li>Item: ${subcategory}</li>
-        <li>Size/Model: ${sizeOrModel}</li>
+        <li>Size: ${size}</li>
         ${color !== 'N/A' ? `<li>Color: ${color}</li>` : ''}
         <li>Quantity: ${quantity}</li>
         <li>Price: $${price.toFixed(2)}</li>

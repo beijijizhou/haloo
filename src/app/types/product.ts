@@ -2,7 +2,7 @@ import { PrintPosition } from "../lib/constants/category";
 
 export enum ImageState {
   Original = 'Original',
-  Processed = 'Processed',
+  BackgroundRemoved = 'Background Removed',
   AI = 'AI Processed',
 }
 

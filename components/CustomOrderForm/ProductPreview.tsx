@@ -21,7 +21,7 @@ export default function ProductPreview() {
 
   const getImageUrl = () => {
     switch (localImageState) {
-      case ImageState.Processed:
+      case ImageState.BackgroundRemoved:
         return processedUrl || url;
       case ImageState.Original:
       default:
@@ -31,7 +31,7 @@ export default function ProductPreview() {
 
   const isOptionDisabled = (mode: ImageState) => {
     if (mode === ImageState.Original) return false;
-    if (mode === ImageState.Processed) return !processedUrl;
+    if (mode === ImageState.BackgroundRemoved) return !processedUrl;
     return true;
   };
 
@@ -75,14 +75,13 @@ export default function ProductPreview() {
                   className="absolute top-full left-0 mt-2 w-48 bg-orange-500 text-white shadow-lg rounded-lg z-50"
                 >
                   {Object.values(ImageState)
-                    .filter((mode) => mode === ImageState.Original || mode === ImageState.Processed)
+                    .filter((mode) => mode === ImageState.Original || mode === ImageState.BackgroundRemoved)
                     .map((mode) => (
                       <div
                         key={mode}
                         onClick={() => handleModeChange(mode)}
-                        className={`px-4 py-2 text-sm text-black bg-white font-semibold hover:bg-orange-200 transition-colors duration-200 ${
-                          isOptionDisabled(mode) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                        }`}
+                        className={`px-4 py-2 text-sm text-black bg-white font-semibold hover:bg-orange-200 transition-colors duration-200 ${isOptionDisabled(mode) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                          }`}
                       >
                         {mode}
                       </div>
