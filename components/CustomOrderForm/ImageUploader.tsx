@@ -40,7 +40,7 @@ export default function ImageUploader() {
 
       {product.image.url && (
         <div className="mt-4">
-          <h3 className="text-lg font-medium text-gray-700">Preview:</h3>
+          <h3 className="text-lg font-medium text-gray-700">Image Preview:</h3>
           <div className="relative w-full h-64 bg-gray-100 rounded-md overflow-hidden">
             <Image
               src={product.image.url}

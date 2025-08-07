@@ -1,7 +1,6 @@
 'use client';
 
 import { useProductSelector } from '@/app/hooks/useProductSelector';
-import {  PrintPosition } from '@/app/lib/constants/category';
 
 interface DropdownProps {
   id: string;
@@ -40,12 +39,11 @@ function Dropdown({ id, label, value, options, onChange, disabled, ariaLabel }: 
 
 export default function ProductSelector() {
   const {
-    selections: { category, subcategory, size, color, image, price },
+    selections: { category, subcategory, size, color, price },
     categories,
     subcategories,
     sizes,
     colors,
-    printPositions,
     handleChange,
   } = useProductSelector();
 
@@ -86,7 +84,7 @@ export default function ProductSelector() {
         disabled={!category}
         ariaLabel="Select color"
       />
-      <Dropdown
+      {/* <Dropdown
         id="printPosition"
         label="Print Position"
         value={image.printPosition}
@@ -94,7 +92,7 @@ export default function ProductSelector() {
         onChange={(value) => handleChange('image', { ...image, printPosition: value as PrintPosition })}
         disabled={!category}
         ariaLabel="Select print position"
-      />
+      /> */}
       <div>
         <p className="text-lg font-medium text-gray-700">Price: ${price.toFixed(2)}</p>
       </div>

@@ -9,9 +9,10 @@ import { useProductStore } from '../stores/useProductStore';
 
 export default function CreatePage() {
   const {
-    selections: { category, subcategory, size, color, image,},
+    selections: { category, subcategory, size, color },
   } = useProductSelector();
   const { product } = useProductStore();
+  const { image } = product
   const { addProduct } = useCartStore();
   const [showNotification, setShowNotification] = useState(false);
 
@@ -47,11 +48,10 @@ export default function CreatePage() {
           <button
             onClick={handleAddToCart}
             disabled={isAddToCartDisabled()}
-            className={`w-full py-3 px-8 rounded-full text-lg font-bold transition duration-300 ${
-              isAddToCartDisabled()
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-orange-500 text-white hover:bg-orange-600'
-            }`}
+            className={`w-full py-3 px-8 rounded-full text-lg font-bold transition duration-300 ${isAddToCartDisabled()
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-orange-500 text-white hover:bg-orange-600'
+              }`}
           >
             Add to Cart
           </button>

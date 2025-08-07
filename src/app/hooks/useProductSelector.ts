@@ -1,41 +1,33 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useProductStore } from '@/app/stores/useProductStore';
-import {
-  categories,
-  Category,
-  COLORS,
-  PRODUCT_SIZES,
-  PrintPosition,
-} from '../lib/constants/category';
-import { ImageState, Product, Image } from '../types';
+import { categories, Category, COLORS, PRODUCT_SIZES,  } from '../lib/constants/category';
+
+interface ProductSelections {
+  category: string;
+  subcategory: string;
+  size: string;
+  color: string;
+  price: number;
+}
 
 interface UseProductSelectorReturn {
-  selections: Omit<Product, 'id' | 'quantity'>;
+  selections: ProductSelections;
   categories: Category[];
   subcategories: { name: string; href: string }[];
   sizes: string[];
   colors: string[];
-  imageStates: ImageState[];
-  printPositions: PrintPosition[];
-  handleChange: <K extends keyof Omit<Product, 'id' | 'quantity'>>(field: K, value: Omit<Product, 'id' | 'quantity'>[K]) => void;
+  handleChange: <K extends keyof ProductSelections>(field: K, value: ProductSelections[K]) => void;
 }
 
 export function useProductSelector(): UseProductSelectorReturn {
   const { product, setProductSelection } = useProductStore();
-  const { category, subcategory, size, color,  price, image } = product;
+  const { category, subcategory, size, color, price } = product;
 
-  const [selections, setSelections] = useState<Omit<Product, 'id' | 'quantity'>>({
+  const [selections, setSelections] = useState<ProductSelections>({
     category: category || 'Clothing',
     subcategory: subcategory || '',
     size: size || '',
     color: color || '',
-    image: {
-      url: image?.url || null,
-      processedUrl: image?.processedUrl || null,
-      highQualityProcessedUrl: image?.highQualityProcessedUrl || null,
-      imageState: image?.imageState || ImageState.Original,
-      printPosition: image?.printPosition || PrintPosition.Front,
-    },
     price: price || 0,
   });
 
@@ -62,36 +54,18 @@ export function useProductSelector(): UseProductSelectorReturn {
   }, []);
 
   // Consolidated change handler
-  const handleChange = useCallback(
-    <K extends keyof Omit<Product, 'id' | 'quantity'>>(
-      field: K,
-      value: Omit<Product, 'id' | 'quantity'>[K],
-    ) => {
-      setSelections((prev) => {
-        if (field === 'image') {
-          return { ...prev, image: value as Image };
-        }
-        return { ...prev, [field]: value };
-      });
-    },
-    [],
-  );
+  const handleChange = useCallback(<K extends keyof ProductSelections>(field: K, value: ProductSelections[K]) => {
+    setSelections((prev) => ({ ...prev, [field]: value }));
+  }, []);
 
   // useEffect for resetting dependent fields and syncing with store
   useEffect(() => {
-    const { category, subcategory, size, color, image, price } = selections;
+    const { category, subcategory, size, color, price } = selections;
 
     // Calculate new dependent values
     const newSubcategory = subcategory || getDefaultSubcategory(category);
     const newSize = size || getDefaultSize(category);
     const newColor = color || COLORS[0];
-    const newImage = {
-      url: image.url,
-      processedUrl: image.processedUrl,
-      highQualityProcessedUrl: image.highQualityProcessedUrl,
-      imageState: image.imageState || ImageState.Original,
-      printPosition: image.printPosition || PrintPosition.Front,
-    };
     const newPrice = getPrice(category, newSubcategory);
 
     // Update selections if any dependent field has changed
@@ -99,8 +73,6 @@ export function useProductSelector(): UseProductSelectorReturn {
       subcategory !== newSubcategory ||
       size !== newSize ||
       color !== newColor ||
-      image.imageState !== newImage.imageState ||
-      image.printPosition !== newImage.printPosition ||
       price !== newPrice
     ) {
       setSelections({
@@ -108,7 +80,6 @@ export function useProductSelector(): UseProductSelectorReturn {
         subcategory: newSubcategory,
         size: newSize,
         color: newColor,
-        image: newImage,
         price: newPrice,
       });
     }
@@ -120,11 +91,11 @@ export function useProductSelector(): UseProductSelectorReturn {
       subcategory: newSubcategory,
       size: newSize,
       color: newColor,
-      image: newImage,
+      image: product.image,
       quantity: 1,
       price: newPrice,
     });
-  }, [selections, setProductSelection, getPrice, getDefaultSubcategory, getDefaultSize, product.id]);
+  }, [selections, setProductSelection, getPrice, getDefaultSubcategory, getDefaultSize, product.id,  product.image]);
 
   const subcategories = categories.find((cat) => cat.name === selections.category)?.subcategories || [];
 
@@ -134,8 +105,6 @@ export function useProductSelector(): UseProductSelectorReturn {
     subcategories,
     sizes: PRODUCT_SIZES,
     colors: COLORS,
-    imageStates: [ImageState.Original, ImageState.Processed],
-    printPositions: Object.values(PrintPosition),
     handleChange,
   };
 }
