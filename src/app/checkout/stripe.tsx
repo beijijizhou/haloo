@@ -14,6 +14,7 @@ export function CheckoutForm({ amount }: { amount: number }) {
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { clearCart } = useCartStore();
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -33,10 +34,11 @@ export function CheckoutForm({ amount }: { amount: number }) {
         return_url: `${window.location.origin}/order-success`,
       },
     });
-
+    
     // This point will only be reached if there's an immediate error when
     // confirming the payment. Otherwise, your customer will be redirected to
     // your `return_url`.
+    alert("waiting for redirect")
     setIsLoading(false);
     if (error) {
       // Show error to your customer (e.g., insufficient funds)

@@ -50,7 +50,7 @@ async function sendEmail(payload: ConfirmationEmailPayload) {
       },
     ]
     : [];
-    return null
+    // return null
   return await resend.emails.send({
     from: process.env.NEXT_PUBLIC_SHOP_EMAIL || 'onboarding@resend.dev',
     to: [email, storeEmail],
