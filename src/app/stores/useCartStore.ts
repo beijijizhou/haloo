@@ -97,6 +97,8 @@ export const useCartStore = create<CartState>()(
           await clear();
           console.log('Cleared all IndexedDB entries');
           set({ products: [] });
+          localStorage.clear();
+          
         } catch (error) {
           console.error('Failed to clear cart IndexedDB entries:', error);
         }
