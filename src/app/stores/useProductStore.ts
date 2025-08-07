@@ -1,14 +1,12 @@
-import { ImageState } from './../types/product';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { get, set } from 'idb-keyval';
-import { Product, Image } from '../types';
 import { PrintPosition } from '../lib/constants/category';
+import { Product, Image, ImageState } from '../types';
 
 type ProductStore = {
   product: Product;
-  setProductSelection: (product: Partial<Product>) => void;
-  setFinalImageState: (displayMode: ImageState) => void;
+  setSelection: (product: Partial<Product>) => void;
   setImage: (image: Partial<Image>) => void;
 };
 
@@ -21,31 +19,22 @@ export const useProductStore = create<ProductStore>()(
         subcategory: '',
         size: '',
         color: '',
+        material: '',
         quantity: 1,
         price: 0,
         image: {
           url: null,
           processedUrl: null,
           highQualityProcessedUrl: null,
-          imageState: ImageState.Processed,
-          printPosition:PrintPosition.Front
+          imageState: ImageState.Original, // Neutral default
+          printPosition: PrintPosition.Front,
         },
       },
-      setProductSelection: (newProduct) =>
+      setSelection: (newProduct) =>
         set((state) => ({
           product: {
             ...state.product,
             ...newProduct,
-          },
-        })),
-      setFinalImageState: (displayMode) =>
-        set((state) => ({
-          product: {
-            ...state.product,
-            image: {
-              ...state.product.image,
-              imageState: displayMode,
-            },
           },
         })),
       setImage: (image) =>
@@ -54,8 +43,8 @@ export const useProductStore = create<ProductStore>()(
             ...state.product,
             image: {
               ...state.product.image,
-              ...image,
-            },
+              ...image, // Merge partial image updates
+            }, // Replace entire image object
           },
         })),
     }),

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useProductStore } from '@/app/stores/useProductStore';
-import { categories, Category, COLORS, PRODUCT_SIZES,  } from '../lib/constants/category';
+import { categories, Category, COLORS, PRODUCT_SIZES, } from '../lib/constants/category';
 
 interface ProductSelections {
   category: string;
@@ -20,7 +20,7 @@ interface UseProductSelectorReturn {
 }
 
 export function useProductSelector(): UseProductSelectorReturn {
-  const { product, setProductSelection } = useProductStore();
+  const { product, setSelection: setProductSelection } = useProductStore();
   const { category, subcategory, size, color, price } = product;
 
   const [selections, setSelections] = useState<ProductSelections>({
@@ -95,7 +95,7 @@ export function useProductSelector(): UseProductSelectorReturn {
       quantity: 1,
       price: newPrice,
     });
-  }, [selections, setProductSelection, getPrice, getDefaultSubcategory, getDefaultSize, product.id,  product.image]);
+  }, [selections, setProductSelection, getPrice, getDefaultSubcategory, getDefaultSize, product.id, product.image]);
 
   const subcategories = categories.find((cat) => cat.name === selections.category)?.subcategories || [];
 
