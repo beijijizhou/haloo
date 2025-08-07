@@ -1,48 +1,48 @@
-'use client';
-
 import { useState, useEffect, useCallback } from 'react';
 import { useProductStore } from '@/app/stores/useProductStore';
-import { ImageState } from '../types';
-import { categories, Category, COLORS, PHONE_CASE_MATERIALS, PHONE_MODELS, PRODUCT_SIZES } from '../lib/constants/category';
+import {
+  categories,
+  Category,
+  COLORS,
+  PRODUCT_SIZES,
+  PrintPosition,
+} from '../lib/constants/category';
+import { ImageState, Product, Image } from '../types';
 
 interface UseProductSelectorReturn {
-  selectedCategory: string;
-  selectedSubcategory: string;
-  selectedSizeOrModel: string;
-  selectedColor: string;
-  selectedMaterial: string;
-  selectedPrice: number;
+  selections: Omit<Product, 'id' | 'quantity'>;
   categories: Category[];
   subcategories: { name: string; href: string }[];
-  sizesOrModels: string[];
+  sizes: string[];
   colors: string[];
-  phonecaseMaterials: string[];
-  handleCategoryChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  handleSubcategoryChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  handleSizeOrModelChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  handleColorChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  handleMaterialChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  imageStates: ImageState[];
+  printPositions: PrintPosition[];
+  handleChange: <K extends keyof Omit<Product, 'id' | 'quantity'>>(field: K, value: Omit<Product, 'id' | 'quantity'>[K]) => void;
 }
 
 export function useProductSelector(): UseProductSelectorReturn {
   const { product, setProductSelection } = useProductStore();
-  const { category, subcategory, sizeOrModel, color, material, price } = product;
+  const { category, subcategory, size, color,  price, image } = product;
 
-  const [selectedCategory, setSelectedCategory] = useState<string>(category || 'Clothing');
-  const [selectedSubcategory, setSelectedSubcategory] = useState<string>(subcategory || '');
-  const [selectedSizeOrModel, setSelectedSizeOrModel] = useState<string>(sizeOrModel || '');
-  const [selectedColor, setSelectedColor] = useState<string>(color || '');
-  const [selectedMaterial, setSelectedMaterial] = useState<string>(material || '');
-
-  const [selectedPrice, setSelectedPrice] = useState<number>(price || 0);
+  const [selections, setSelections] = useState<Omit<Product, 'id' | 'quantity'>>({
+    category: category || 'Clothing',
+    subcategory: subcategory || '',
+    size: size || '',
+    color: color || '',
+    image: {
+      url: image?.url || null,
+      processedUrl: image?.processedUrl || null,
+      highQualityProcessedUrl: image?.highQualityProcessedUrl || null,
+      imageState: image?.imageState || ImageState.Original,
+      printPosition: image?.printPosition || PrintPosition.Front,
+    },
+    price: price || 0,
+  });
 
   // Helper function to calculate price
   const getPrice = useCallback((category: string, subcategory: string) => {
     if (category === 'Clothing') {
       return subcategory === 'Tshirts' ? 19.99 : 29.99;
-    }
-    if (category === 'Phone Cases') {
-      return 24.99;
     }
     return 0;
   }, []);
@@ -53,113 +53,89 @@ export function useProductSelector(): UseProductSelectorReturn {
     return categoryData?.subcategories[0]?.name || '';
   }, []);
 
-  // Helper function to get default size or model
-  const getDefaultSizeOrModel = useCallback((category: string, subcategory: string) => {
+  // Helper function to get default size
+  const getDefaultSize = useCallback((category: string) => {
     if (category === 'Clothing') {
-      return PRODUCT_SIZES[0];
-    }
-    if (category === 'Phone Cases' && subcategory && subcategory !== 'Others') {
-      return PHONE_MODELS[subcategory as keyof typeof PHONE_MODELS]?.[0] || '';
+      return PRODUCT_SIZES[0] || '';
     }
     return '';
   }, []);
 
-  // Consolidated useEffect for state updates
-  useEffect(() => {
-    // Reset dependent fields when category changes
-    const newSubcategory = selectedSubcategory || getDefaultSubcategory(selectedCategory);
-    const newSizeOrModel = selectedSizeOrModel || getDefaultSizeOrModel(selectedCategory, newSubcategory);
-    const newColor = selectedCategory === 'Phone Cases' ? '' : selectedColor || COLORS[0];
-    const newMaterial =
-      selectedCategory === 'Phone Cases' && newSubcategory !== 'Others'
-        ? selectedMaterial || PHONE_CASE_MATERIALS[0]
-        : '';
-    const newPrice = getPrice(selectedCategory, newSubcategory);
+  // Consolidated change handler
+  const handleChange = useCallback(
+    <K extends keyof Omit<Product, 'id' | 'quantity'>>(
+      field: K,
+      value: Omit<Product, 'id' | 'quantity'>[K],
+    ) => {
+      setSelections((prev) => {
+        if (field === 'image') {
+          return { ...prev, image: value as Image };
+        }
+        return { ...prev, [field]: value };
+      });
+    },
+    [],
+  );
 
-    // Update state only if changes are needed
+  // useEffect for resetting dependent fields and syncing with store
+  useEffect(() => {
+    const { category, subcategory, size, color, image, price } = selections;
+
+    // Calculate new dependent values
+    const newSubcategory = subcategory || getDefaultSubcategory(category);
+    const newSize = size || getDefaultSize(category);
+    const newColor = color || COLORS[0];
+    const newImage = {
+      url: image.url,
+      processedUrl: image.processedUrl,
+      highQualityProcessedUrl: image.highQualityProcessedUrl,
+      imageState: image.imageState || ImageState.Original,
+      printPosition: image.printPosition || PrintPosition.Front,
+    };
+    const newPrice = getPrice(category, newSubcategory);
+
+    // Update selections if any dependent field has changed
     if (
-      selectedSubcategory !== newSubcategory ||
-      selectedSizeOrModel !== newSizeOrModel ||
-      selectedColor !== newColor ||
-      selectedMaterial !== newMaterial ||
-      selectedPrice !== newPrice
+      subcategory !== newSubcategory ||
+      size !== newSize ||
+      color !== newColor ||
+      image.imageState !== newImage.imageState ||
+      image.printPosition !== newImage.printPosition ||
+      price !== newPrice
     ) {
-      setSelectedSubcategory(newSubcategory);
-      setSelectedSizeOrModel(newSizeOrModel);
-      setSelectedColor(newColor);
-      setSelectedMaterial(newMaterial);
-      setSelectedPrice(newPrice);
+      setSelections({
+        category,
+        subcategory: newSubcategory,
+        size: newSize,
+        color: newColor,
+        image: newImage,
+        price: newPrice,
+      });
     }
 
     // Sync with useProductStore
     setProductSelection({
-      category: selectedCategory,
+      id: product.id,
+      category,
       subcategory: newSubcategory,
-      sizeOrModel: newSizeOrModel,
+      size: newSize,
       color: newColor,
-      material: newMaterial,
-      image: {
-        url: product.image.url,
-        processedUrl: product.image.processedUrl,
-        imageState: ImageState.Processed,
-        highQualityProcessedUrl: null,
-      },
-      id: product.id, // Ensure product has an ID
+      image: newImage,
       quantity: 1,
       price: newPrice,
     });
-  }, [selectedCategory, selectedSubcategory, selectedSizeOrModel, selectedColor, selectedMaterial, setProductSelection, getPrice, getDefaultSubcategory, getDefaultSizeOrModel, selectedPrice, product.image.url, product.image.processedUrl, product.image.highQualityProcessedUrl, product.id]);
+  }, [selections, setProductSelection, getPrice, getDefaultSubcategory, getDefaultSize, product.id]);
 
-  const handleCategoryChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategory(event.target.value);
-  }, []);
-
-  const handleSubcategoryChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSubcategory(event.target.value);
-  }, []);
-
-  const handleSizeOrModelChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSizeOrModel(event.target.value);
-  }, []);
-
-  const handleColorChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedColor(event.target.value);
-  }, []);
-
-  const handleMaterialChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedMaterial(event.target.value);
-  }, []);
-
-
-
-  const subcategories = selectedCategory
-    ? categories.find((cat) => cat.name === selectedCategory)?.subcategories || []
-    : [];
-
-  const sizesOrModels =
-    selectedCategory === 'Clothing'
-      ? PRODUCT_SIZES
-      : selectedCategory === 'Phone Cases' && selectedSubcategory && selectedSubcategory !== 'Others'
-        ? PHONE_MODELS[selectedSubcategory as keyof typeof PHONE_MODELS] || []
-        : [];
+  const subcategories = categories.find((cat) => cat.name === selections.category)?.subcategories || [];
 
   return {
-    selectedCategory,
-    selectedSubcategory,
-    selectedSizeOrModel,
-    selectedColor,
-    selectedMaterial,
-    selectedPrice,
+    selections,
     categories,
     subcategories,
-    sizesOrModels,
-    colors: selectedCategory === 'Clothing' ? COLORS : [],
-    phonecaseMaterials: selectedCategory === 'Phone Cases' ? PHONE_CASE_MATERIALS : [],
-    handleCategoryChange,
-    handleSubcategoryChange,
-    handleSizeOrModelChange,
-    handleColorChange,
-    handleMaterialChange,
-
+    sizes: PRODUCT_SIZES,
+    colors: COLORS,
+    imageStates: [ImageState.Original, ImageState.Processed],
+    printPositions: Object.values(PrintPosition),
+    handleChange,
   };
 }

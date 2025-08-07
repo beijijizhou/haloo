@@ -9,41 +9,24 @@ import { useProductStore } from '../stores/useProductStore';
 
 export default function CreatePage() {
   const {
-    selectedCategory,
-    selectedSubcategory,
-    selectedSizeOrModel,
-    selectedColor,
-    selectedMaterial,
+    selections: { category, subcategory, size, color, image,},
   } = useProductSelector();
-  const { product} = useProductStore();
+  const { product } = useProductStore();
   const { addProduct } = useCartStore();
   const [showNotification, setShowNotification] = useState(false);
 
   const isAddToCartDisabled = () => {
-    // Shared attributes (required for both categories)
-    const sharedValid = Boolean(
-      selectedCategory &&
-      selectedSubcategory &&
-      product.image.url
+    // Required fields for Clothing
+    return !(
+      category &&
+      subcategory &&
+      size &&
+      color &&
+      image.url &&
+      image.printPosition
     );
-
-    if (!sharedValid) return true;
-
-    // Category-specific attributes
-    if (selectedCategory === 'Clothing') {
-      return !selectedSizeOrModel || !selectedColor;
-    }
-
-    if (selectedCategory === 'Phone Cases') {
-      // For "Others" subcategory, sizeOrModel and material are not required
-      if (selectedSubcategory === 'Others') {
-        return false;
-      }
-      return !selectedSizeOrModel || !selectedMaterial;
-    }
-
-    return true; // Default case (should not occur with valid categories)
   };
+
   const handleAddToCart = () => {
     addProduct(product);
     setShowNotification(true);

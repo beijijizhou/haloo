@@ -35,7 +35,7 @@ function validateBase64Image(image: string): { isValid: boolean; content: string
 async function sendEmail(payload: ConfirmationEmailPayload) {
   const {
     contactInfo: { fullName, email, phone, street, city, state, zipCode },
-    product: { category = 'N/A', subcategory = 'N/A', sizeOrModel = 'N/A', color = 'N/A', material = 'N/A' },
+    product: { category = 'N/A', subcategory = 'N/A', size: sizeOrModel = 'N/A', color = 'N/A' },
     order: { price = 0, image = '', quantity = 1, orderId = 'N/A' },
   } = payload;
   console.log('Sending confirmation email with payload:', payload);
@@ -43,12 +43,12 @@ async function sendEmail(payload: ConfirmationEmailPayload) {
 
   const attachments = isValid
     ? [
-        {
-          filename: `order-image-${orderId}.${mimeType.split('/')[1]}`,
-          content: content,
-          contentType: mimeType,
-        },
-      ]
+      {
+        filename: `order-image-${orderId}.${mimeType.split('/')[1]}`,
+        content: content,
+        contentType: mimeType,
+      },
+    ]
     : [];
 
   return await resend.emails.send({
@@ -65,7 +65,6 @@ async function sendEmail(payload: ConfirmationEmailPayload) {
         <li>Item: ${subcategory}</li>
         <li>Size/Model: ${sizeOrModel}</li>
         ${color !== 'N/A' ? `<li>Color: ${color}</li>` : ''}
-        ${material !== 'N/A' ? `<li>Material: ${material}</li>` : ''}
         <li>Quantity: ${quantity}</li>
         <li>Price: $${price.toFixed(2)}</li>
         <li>Phone: ${phone}</li>

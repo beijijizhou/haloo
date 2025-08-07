@@ -1,3 +1,5 @@
+import { PrintPosition } from "../lib/constants/category";
+
 export enum ImageState {
   Original = 'Original',
   Processed = 'Processed',
@@ -9,15 +11,15 @@ export interface Image {
   processedUrl: string | null; // Regular background-removed Base64 image
   highQualityProcessedUrl: string | null; // High-quality background-removed Base64 image
   imageState: ImageState; // Controls which image to display
+  printPosition: PrintPosition,
 }
 
 export interface Product {
   id: string;
   category: string;
   subcategory: string;
-  sizeOrModel: string;
+  size: string;
   color: string;
-  material: string;
   quantity: number;
   price: number;
   image: Image;

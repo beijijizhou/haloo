@@ -29,3 +29,9 @@ export const PHONE_MODELS = {
 };
 export const COLORS = ['Black', 'White','Orange', 'Grey', 'Purple', 'Blue', 'Red', ];
 export const PHONE_CASE_MATERIALS = ['PVC', 'PC'];
+
+export enum PrintPosition {
+  Front = 'Front',
+  Back = 'Back',
+  FrontAndBack = 'Front & Back',
+}

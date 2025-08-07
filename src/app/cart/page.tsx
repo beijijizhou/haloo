@@ -56,16 +56,11 @@ export default function Cart() {
                     {item.product.category} - {item.product.subcategory}
                   </h3>
                   <p className="text-gray-600 text-sm mb-2">
-                    Size/Model: {item.product.sizeOrModel || 'N/A'}
+                    Size: {item.product.size || 'N/A'}
                   </p>
                   {item.product.color && (
                     <p className="text-gray-600 text-sm mb-2">
                       Color: {item.product.color}
-                    </p>
-                  )}
-                  {item.product.material && (
-                    <p className="text-gray-600 text-sm mb-2">
-                      Material: {item.product.material}
                     </p>
                   )}
                   <div className="flex items-center justify-center gap-4 mb-2">

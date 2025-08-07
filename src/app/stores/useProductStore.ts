@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { get, set } from 'idb-keyval';
 import { Product, Image } from '../types';
+import { PrintPosition } from '../lib/constants/category';
 
 type ProductStore = {
   product: Product;
@@ -18,16 +19,16 @@ export const useProductStore = create<ProductStore>()(
         id: '',
         category: '',
         subcategory: '',
-        sizeOrModel: '',
+        size: '',
         color: '',
-        material: '',
         quantity: 1,
         price: 0,
         image: {
           url: null,
           processedUrl: null,
           highQualityProcessedUrl: null,
-          imageState: ImageState.Processed
+          imageState: ImageState.Processed,
+          printPosition:PrintPosition.Front
         },
       },
       setProductSelection: (newProduct) =>

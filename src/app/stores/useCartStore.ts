@@ -25,7 +25,7 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       products: [],
       addProduct: async (newProduct) => {
-        const id = `${newProduct.category}-${newProduct.subcategory}-${newProduct.sizeOrModel}-${newProduct.material}-${Date.now()}`;
+        const id = `${newProduct.category}-${newProduct.subcategory}-${newProduct.size}-${Date.now()}`;
         const existingProduct = findMatchingProduct(get().products, newProduct);
         if (existingProduct) {
           set((state) => ({
@@ -107,7 +107,7 @@ export const useCartStore = create<CartState>()(
       partialize: (state) => ({
         products: state.products.map((item) => ({
           id: item.id,
-          product:item.product
+          product: item.product
         })),
       }),
       storage: {

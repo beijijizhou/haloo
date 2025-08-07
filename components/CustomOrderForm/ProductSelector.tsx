@@ -1,144 +1,102 @@
 'use client';
 
 import { useProductSelector } from '@/app/hooks/useProductSelector';
+import {  PrintPosition } from '@/app/lib/constants/category';
 
+interface DropdownProps {
+  id: string;
+  label: string;
+  value: string;
+  options: { value: string; label: string }[];
+  onChange: (value: string) => void;
+  disabled?: boolean;
+  ariaLabel: string;
+}
+
+function Dropdown({ id, label, value, options, onChange, disabled, ariaLabel }: DropdownProps) {
+  return (
+    <div>
+      <label htmlFor={id} className="block text-lg font-medium text-gray-700 mb-1">
+        {label}:
+      </label>
+      <select
+        id={id}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        disabled={disabled}
+        className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:bg-gray-100 disabled:cursor-not-allowed"
+        aria-label={ariaLabel}
+      >
+        <option value="">Select {label}</option>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
 
 export default function ProductSelector() {
   const {
-    selectedCategory,
-    selectedSubcategory,
-    selectedSizeOrModel,
-    selectedColor,
-    selectedMaterial,
-    selectedPrice,
+    selections: { category, subcategory, size, color, image, price },
     categories,
     subcategories,
-    sizesOrModels,
+    sizes,
     colors,
-    phonecaseMaterials,
-    handleCategoryChange,
-    handleSubcategoryChange,
-    handleSizeOrModelChange,
-    handleColorChange,
-    handleMaterialChange,
-
+    printPositions,
+    handleChange,
   } = useProductSelector();
-
-
- 
 
   return (
     <div className="space-y-4">
+      <Dropdown
+        id="category"
+        label="Category"
+        value={category}
+        options={categories.map((cat) => ({ value: cat.name, label: cat.name }))}
+        onChange={(value) => handleChange('category', value)}
+        ariaLabel="Select product category"
+      />
+      <Dropdown
+        id="subcategory"
+        label="Item"
+        value={subcategory}
+        options={subcategories.map((sub) => ({ value: sub.name, label: sub.name }))}
+        onChange={(value) => handleChange('subcategory', value)}
+        disabled={!category}
+        ariaLabel="Select product item"
+      />
+      <Dropdown
+        id="size"
+        label="Size"
+        value={size}
+        options={sizes.map((size) => ({ value: size, label: size }))}
+        onChange={(value) => handleChange('size', value)}
+        disabled={!category}
+        ariaLabel="Select size"
+      />
+      <Dropdown
+        id="color"
+        label="Color"
+        value={color}
+        options={colors.map((color) => ({ value: color, label: color }))}
+        onChange={(value) => handleChange('color', value)}
+        disabled={!category}
+        ariaLabel="Select color"
+      />
+      <Dropdown
+        id="printPosition"
+        label="Print Position"
+        value={image.printPosition}
+        options={printPositions.map((position) => ({ value: position, label: position }))}
+        onChange={(value) => handleChange('image', { ...image, printPosition: value as PrintPosition })}
+        disabled={!category}
+        ariaLabel="Select print position"
+      />
       <div>
-        <label htmlFor="category" className="block text-lg font-medium text-gray-700 mb-1">
-          Category:
-        </label>
-        <select
-          id="category"
-          value={selectedCategory}
-          onChange={handleCategoryChange}
-          className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-          aria-label="Select product category"
-        >
-          {categories.map((category) => (
-            <option key={category.name} value={category.name}>
-              {category.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label htmlFor="subcategory" className="block text-lg font-medium text-gray-700 mb-1">
-          Item:
-        </label>
-        <select
-          id="subcategory"
-          value={selectedSubcategory}
-          onChange={handleSubcategoryChange}
-          disabled={!selectedCategory}
-          className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:bg-gray-100 disabled:cursor-not-allowed"
-          aria-label="Select product item"
-        >
-          <option value="">Select Item</option>
-          {subcategories.map((item) => (
-            <option key={item.name} value={item.name}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label htmlFor="sizeOrModel" className="block text-lg font-medium text-gray-700 mb-1">
-          {selectedCategory === 'Clothing' ? 'Size' : 'Model'}:
-        </label>
-        <select
-          id="sizeOrModel"
-          value={selectedSizeOrModel}
-          onChange={handleSizeOrModelChange}
-          disabled={!selectedCategory || (selectedCategory === 'Phone Cases' && selectedSubcategory === 'Others')}
-          className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:bg-gray-100 disabled:cursor-not-allowed"
-          aria-label={selectedCategory === 'Clothing' ? 'Select size' : 'Select phone model'}
-        >
-          <option value="">Select {selectedCategory === 'Clothing' ? 'Size' : 'Model'}</option>
-          {sizesOrModels.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {selectedCategory === 'Clothing' && (
-        <div>
-          <label htmlFor="color" className="block text-lg font-medium text-gray-700 mb-1">
-            Color:
-          </label>
-          <select
-            id="color"
-            value={selectedColor}
-            onChange={handleColorChange}
-            disabled={!selectedCategory}
-            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:bg-gray-100 disabled:cursor-not-allowed"
-            aria-label="Select color"
-          >
-            <option value="">Select Color</option>
-            {colors.map((color) => (
-              <option key={color} value={color}>
-                {color}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-
-      {selectedCategory === 'Phone Cases' && (
-        <div>
-          <label htmlFor="material" className="block text-lg font-medium text-gray-700 mb-1">
-            Material:
-          </label>
-          <select
-            id="material"
-            value={selectedMaterial}
-            onChange={handleMaterialChange}
-            disabled={selectedSubcategory === 'Others'}
-            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:bg-gray-100 disabled:cursor-not-allowed"
-            aria-label="Select phone case material"
-          >
-            <option value="">Select Material</option>
-            {phonecaseMaterials.map((material) => (
-              <option key={material} value={material}>
-                {material}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-      <div>
-        <p className="text-lg font-medium text-gray-700">
-          Price: ${selectedPrice.toFixed(2)}
-        </p>
+        <p className="text-lg font-medium text-gray-700">Price: ${price.toFixed(2)}</p>
       </div>
     </div>
   );

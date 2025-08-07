@@ -40,7 +40,7 @@ export default function ShopDropdownMenu({ isOpen }: DropdownMenuProps) {
                     transition={{ duration: 0.2 }}
                     className="absolute left-full top-0 ml-2 w-48 bg-white shadow-lg rounded-lg"
                   >
-                    {category.items.map((item) => (
+                    {category.subcategories.map((item) => (
                       <Link
                         key={item.name}
                         href={item.href}

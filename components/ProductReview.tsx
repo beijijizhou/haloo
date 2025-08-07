@@ -76,9 +76,8 @@ export default function ProductReview() {
                 <h3 className="text-lg font-medium text-gray-800">
                   {product.category} {product.subcategory}
                 </h3>
-                <p className="text-sm text-gray-600">Size/Model: {product.sizeOrModel}</p>
+                <p className="text-sm text-gray-600">Size/Model: {product.size}</p>
                 <p className="text-sm text-gray-600">Color: {product.color}</p>
-                <p className="text-sm text-gray-600">Material: {product.material}</p>
                 <p className="text-sm text-gray-600">Quantity: {product.quantity}</p>
                 <p className="text-sm font-semibold text-gray-800">
                   Price: ${(product.price * product.quantity).toFixed(2)}
