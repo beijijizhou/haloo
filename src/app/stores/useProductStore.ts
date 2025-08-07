@@ -6,7 +6,7 @@ import { Product, Image, ImageState } from '../types';
 
 type ProductStore = {
   product: Product;
-  setSelection: (product: Partial<Product>) => void;
+  setProductSelection: (product: Partial<Product>) => void;
   setImage: (image: Partial<Image>) => void;
 };
 
@@ -30,7 +30,7 @@ export const useProductStore = create<ProductStore>()(
           printPosition: PrintPosition.Front,
         },
       },
-      setSelection: (newProduct) =>
+      setProductSelection: (newProduct) =>
         set((state) => ({
           product: {
             ...state.product,

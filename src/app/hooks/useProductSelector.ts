@@ -20,7 +20,7 @@ interface UseProductSelectorReturn {
 }
 
 export function useProductSelector(): UseProductSelectorReturn {
-  const { product, setSelection: setProductSelection } = useProductStore();
+  const { product,  setProductSelection } = useProductStore();
   const { category, subcategory, size, color, price } = product;
 
   const [selections, setSelections] = useState<ProductSelections>({

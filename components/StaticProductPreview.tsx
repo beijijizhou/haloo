@@ -6,8 +6,7 @@ import { ImageState, Product } from '@/app/types';
 
 export default function StaticProductPreview({ product }: { product: Product }) {
   const { image } = product;
-  const { url, processedUrl, highQualityProcessedUrl, imageState } = image;
-  console.log('StaticProductPreview: image data:', { url, processedUrl, highQualityProcessedUrl, imageState });
+  const { url, processedUrl, imageState } = image;
   
   const tshirtColor = colorMap[product.color] || colorMap.default;
 

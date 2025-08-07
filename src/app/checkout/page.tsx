@@ -30,7 +30,6 @@ export default function CheckoutPage() {
   const { clearCart } = useCartStore()
   const { isContactInfoValid } = useContactInfoStore();
   const orderAmount = price * quantity; // Convert to cents for Stripe
-  console.log('Order Amount:', orderAmount);
 
   useEffect(() => {
     // Fetch client secret from your Next.js API route
@@ -56,7 +55,6 @@ export default function CheckoutPage() {
     fetchClientSecret();
   }, [clearCart, orderAmount]); // Re-fetch if orderAmount changes
 
-  console.log(isContactInfoValid)
   return (
     <div className="container mx-auto px-4 py-16">
       <h1 className="text-4xl font-bold mb-12 text-center text-gray-800">Checkout</h1>
