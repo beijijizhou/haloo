@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { ContactInfo } from '../types';
+import { ContactInfo, DEFAULT_CONTACT_INFO } from '../types';
 
 interface ContactInfoState {
   contactInfo: ContactInfo;
@@ -13,36 +13,14 @@ interface ContactInfoState {
 export const useContactInfoStore = create<ContactInfoState>()(
   persist(
     (set) => ({
-      contactInfo: {
-        fullName: '',
-        phone: '',
-        email: '',
-        street: '',
-        city: '',
-        state: '',
-        zipCode: '',
-        country: 'United States',
-      },
+      contactInfo: DEFAULT_CONTACT_INFO,
       isContactInfoValid: false,
       setContactInfo: (data) =>
         set((state) => ({
           contactInfo: { ...state.contactInfo, ...data },
         })),
       setIsContactInfoValid: (valid) => set({ isContactInfoValid: valid }),
-      reset: () =>
-        set({
-          contactInfo: {
-            fullName: '',
-            phone: '',
-            email: '',
-            street: '',
-            city: '',
-            state: '',
-            zipCode: '',
-            country: 'United States',
-          },
-          isContactInfoValid: false,
-        }),
+      reset: () => set({ contactInfo: DEFAULT_CONTACT_INFO, isContactInfoValid: false }),
     }),
     {
       name: 'contact-info',
