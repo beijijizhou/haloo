@@ -44,7 +44,6 @@ export const useCartStore = create<CartState>()(
         } else {
           try {
             await setIDB(`cart-item-image-${id}`, newProduct.image.url || '');
-            console.log(`Saved imageUrl for cart item ${id}:`, newProduct.image.url ? 'Present' : 'Empty');
             set((state) => ({
               products: [
                 ...state.products,
@@ -52,7 +51,7 @@ export const useCartStore = create<CartState>()(
                   id,
                   product: {
                     ...newProduct,
-                    color: newProduct.category === 'Phone Cases' ? '' : newProduct.color,
+                    color: newProduct.color,
                     quantity: newProduct.quantity || 1,
                   },
                 },
@@ -126,7 +125,6 @@ export const useCartStore = create<CartState>()(
               products.map(async (item: CartItem) => {
                 try {
                   const imageUrl = await get(`cart-item-image-${item.id}`);
-                  console.log(`Loaded imageUrl for cart item ${item.id}:`, imageUrl ? 'Present' : 'Empty');
                   return {
                     ...item,
                     product: { ...item.product, image: { ...item.product.image, url: imageUrl || '' } },
@@ -140,7 +138,6 @@ export const useCartStore = create<CartState>()(
                 }
               })
             );
-            console.log('Loaded cart from IndexedDB:', { products: productsWithImages });
             return { state: { products: productsWithImages } };
           } catch (error) {
             console.error('Failed to load cart from IndexedDB:', error);
@@ -150,7 +147,6 @@ export const useCartStore = create<CartState>()(
         setItem: async (name, value) => {
           try {
             await setIDB(name, JSON.stringify(value));
-            console.log('Saved cart to IndexedDB:', value);
           } catch (error) {
             console.error('Failed to save cart to IndexedDB:', error);
           }
@@ -158,7 +154,6 @@ export const useCartStore = create<CartState>()(
         removeItem: async (name) => {
           try {
             await del(name);
-            console.log('Removed cart from IndexedDB:', name);
           } catch (error) {
             console.error('Failed to remove cart from IndexedDB:', error);
           }
