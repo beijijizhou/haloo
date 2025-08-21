@@ -57,7 +57,7 @@ async function sendEmail(payload: ConfirmationEmailPayload) {
     subject: `Order Confirmation - ${orderId}`,
     html: `
       <h1>Order Confirmation</h1>
-      <p>${fullName}, Thank you for your order!</p>
+      <p>Hi ${fullName}, Thank you for your order!</p>
       <p>Order ID: ${orderId}</p>
       <p>Details:</p>
       <ul>
