@@ -38,7 +38,7 @@ export function CheckoutForm({ amount }: { amount: number }) {
     // This point will only be reached if there's an immediate error when
     // confirming the payment. Otherwise, your customer will be redirected to
     // your `return_url`.
-    alert("waiting for redirect")
+    // alert("waiting for redirect")
     setIsLoading(false);
     if (error) {
       // Show error to your customer (e.g., insufficient funds)
