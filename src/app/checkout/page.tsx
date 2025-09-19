@@ -8,7 +8,6 @@ import {
 } from '@stripe/react-stripe-js';
 import { CheckoutForm } from './stripe';
 import ContactInfoForm from '../../../components/ContactInfoForm';
-import { useContactInfoStore } from '../stores/useContactInfoStore';
 import { useProductStore } from '../stores/useProductStore';
 import ProductReview from '../../../components/ProductReview';
 import { useCartStore } from '../stores/useCartStore';
@@ -28,7 +27,6 @@ export default function CheckoutPage() {
   const { product } = useProductStore();
   const { price, quantity } = product || { price: 0.5, quantity: 1 }; // Default values if product is not available
   const { clearCart } = useCartStore()
-  const { isContactInfoValid } = useContactInfoStore();
   const orderAmount = price * quantity; // Convert to cents for Stripe
 
   useEffect(() => {
@@ -71,7 +69,7 @@ export default function CheckoutPage() {
               <div className="text-center py-10 text-red-600">
                 Error: {errorFetchingIntent}
               </div>
-            ) : isContactInfoValid && clientSecret && stripePromise ? (
+            ) : clientSecret && stripePromise ? (
               <Elements options={{ clientSecret }} stripe={stripePromise}>
                 <CheckoutForm amount={orderAmount} />
               </Elements>
