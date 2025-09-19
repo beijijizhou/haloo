@@ -6,7 +6,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import {
   Elements,
 } from '@stripe/react-stripe-js';
-import { CheckoutForm } from './stripe';
+import { CheckoutButton } from './CheckoutButton';
 import ContactInfoForm from '../../../components/ContactInfoForm';
 import { useProductStore } from '../stores/useProductStore';
 import ProductReview from '../../../components/ProductReview';
@@ -71,7 +71,7 @@ export default function CheckoutPage() {
               </div>
             ) : clientSecret && stripePromise ? (
               <Elements options={{ clientSecret }} stripe={stripePromise}>
-                <CheckoutForm amount={orderAmount} />
+                <CheckoutButton amount={orderAmount} />
               </Elements>
             ) : (
               <div className="p-6 bg-gray-100 rounded-lg shadow-md text-center">

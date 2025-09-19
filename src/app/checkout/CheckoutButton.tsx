@@ -6,15 +6,16 @@ import {
 import { useState } from 'react';
 import { sendConfirmationEmail } from './api';
 import { useCartStore } from '../stores/useCartStore';
+import { useContactInfoStore } from '../stores/useContactInfoStore';
 
 // A sub-component that uses useStripe and useElements hooks
-export function CheckoutForm({ amount }: { amount: number }) {
+export function CheckoutButton({ amount }: { amount: number }) {
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { clearCart } = useCartStore();
-
+  const { isContactInfoValid } = useContactInfoStore()
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -34,7 +35,7 @@ export function CheckoutForm({ amount }: { amount: number }) {
         return_url: `${window.location.origin}/order-success`,
       },
     });
-    
+
     // This point will only be reached if there's an immediate error when
     // confirming the payment. Otherwise, your customer will be redirected to
     // your `return_url`.
@@ -50,8 +51,8 @@ export function CheckoutForm({ amount }: { amount: number }) {
       clearCart();
     }
 
-    
-    
+
+
   };
 
   return (
@@ -59,8 +60,7 @@ export function CheckoutForm({ amount }: { amount: number }) {
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Complete Your Payment</h2>
       <PaymentElement id="payment-element" className="mb-6" /> {/* Stripe's secure UI for card input */}
       <button
-        disabled={isLoading || !stripe || !elements}
-        id="submit"
+        disabled={isLoading || !stripe || !elements || !isContactInfoValid} // Add !isContactInfoValid        id="submit"
         className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-6 rounded-full text-lg transition-colors duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <span id="button-text">
